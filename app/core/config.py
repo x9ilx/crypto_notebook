@@ -8,7 +8,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class AppConfig(BaseModel):
     app_title: str = "Записная книжка для учёта криптовалюты"
     app_description: str = (
-        "Позволяет вестиу чёт продажи/покупки криптовалюты и получить"
+        "Позволяет вести учёт продажи/покупки криптовалюты и получить"
         "статистику: инвестиции, прибыль, активы и т. п."
     )
     load_demo_data_fixtures: bool = False
