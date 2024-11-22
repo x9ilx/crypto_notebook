@@ -17,7 +17,7 @@ class Currency(Base):
         primaryjoin=(
             'and_(Transaction.currency_id==Currency.id, '
             'Transaction.transaction_type==TransactionType.SALE)'
-        )
+        ),
     )
     purchases: Mapped[list('Transaction')] = relationship(
         'Transaction',
@@ -25,11 +25,10 @@ class Currency(Base):
         primaryjoin=(
             'and_(Transaction.currency_id==Currency.id, '
             'Transaction.transaction_type==TransactionType.PURCHASE)'
-        )
+        ),
     )
     risk_points: Mapped[list('RiskMinimisation')] = relationship(
-        'RiskMinimisation',
-        back_populates='currency'
+        'RiskMinimisation', back_populates='currency'
     )
 
     def __repr__(self):

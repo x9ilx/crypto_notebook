@@ -9,8 +9,8 @@ from core.db import Base
 
 
 class TransactionType(Enum):
-    SALE = "sale"
-    PURCHASE = "purchase"
+    SALE = 'sale'
+    PURCHASE = 'purchase'
 
 
 class Transaction(Base):
@@ -22,37 +22,27 @@ class Transaction(Base):
         server_default=func.now(),
     )
     risk_minimisations: Mapped[list['RiskMinimisation']] = relationship(
-        'RiskMinimisation',
-        back_populates='transaction'
+        'RiskMinimisation', back_populates='transaction'
     )
     currency_id: Mapped[int] = mapped_column(
-        Integer,
-        ForeignKey('currency.id'),
-        nullable=False
+        Integer, ForeignKey('currency.id'), nullable=False
     )
     currency: Mapped['Currency'] = relationship(
-        'Currency',
-        back_populates='sales'
+        'Currency', back_populates='sales'
     )
 
 
 class RiskMinimisation(Base):
     price: Mapped[float] = mapped_column(Float, nullable=False)
     transaction_id: Mapped[int] = mapped_column(
-        Integer,
-        ForeignKey('transaction.id'),
-        nullable=False
+        Integer, ForeignKey('transaction.id'), nullable=False
     )
     transaction: Mapped['Transaction'] = relationship(
-        'Transaction',
-        back_populates='risk_minimisations'
+        'Transaction', back_populates='risk_minimisations'
     )
     currency_id: Mapped[int] = mapped_column(
-        Integer,
-        ForeignKey('currency.id'),
-        nullable=False
+        Integer, ForeignKey('currency.id'), nullable=False
     )
     currency: Mapped['Currency'] = relationship(
-        'Currency',
-        back_populates='sales'
+        'Currency', back_populates='sales'
     )
