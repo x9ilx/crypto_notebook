@@ -6,6 +6,7 @@ from sqlalchemy.sql import func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.db import Base
+from models.mixins import UserMixin
 
 
 class TransactionType(Enum):
@@ -13,7 +14,8 @@ class TransactionType(Enum):
     PURCHASE = 'purchase'
 
 
-class Transaction(Base):
+class Transaction(Base, UserMixin):
+    user_back_populates = 'transactions'
     amount: Mapped[float] = mapped_column(Float, nullable=False)
     price: Mapped[float] = mapped_column(Float, nullable=False)
     transaction_type: Mapped[TransactionType]
@@ -32,7 +34,8 @@ class Transaction(Base):
     )
 
 
-class RiskMinimisation(Base):
+class RiskMinimisation(Base, UserMixin):
+    user_back_populates = 'risk_minisations'
     price: Mapped[float] = mapped_column(Float, nullable=False)
     transaction_id: Mapped[int] = mapped_column(
         Integer, ForeignKey('transaction.id'), nullable=False

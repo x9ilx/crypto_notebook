@@ -4,9 +4,10 @@ from sqlalchemy import Float, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.db import Base
+from models.mixins import UserMixin
 
-
-class Currency(Base):
+class Currency(Base, UserMixin):
+    user_back_populates = 'currencies'
     name: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     quantity: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
