@@ -13,14 +13,7 @@
 - [Команда проекта](#команда-проекта)
 
 ## Технологии
-- [Python](https://www.python.org/)
-- [Django](https://www.djangoproject.com/)
-- [Django REST framework](https://www.django-rest-framework.org/)
-- [Djoser](https://djoser.readthedocs.io/en/latest/getting_started.html)
-- [Gunicorn](https://gunicorn.org/)
-- [PyJWT](https://pyjwt.readthedocs.io/en/stable/)
-- [Petrovich](https://pypi.org/project/Petrovich/)
-- [React](https://ru.legacy.reactjs.org/)
+В РАЗРАБОТКЕ
 
 ## Использование
 В РАЗРАБОТКЕ
