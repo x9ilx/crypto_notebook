@@ -3,7 +3,7 @@ import contextlib
 from core.db import get_async_session
 from core.users import current_user, get_user_db, get_user_manager
 from fastapi_users.exceptions import UserAlreadyExists
-from schemas.users import UserCreate, UserPasswordUpdate
+from schemas.users import UserCreate
 
 get_async_session_context = contextlib.asynccontextmanager(get_async_session)
 get_user_db_context = contextlib.asynccontextmanager(get_user_db)

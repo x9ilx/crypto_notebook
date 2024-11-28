@@ -1,7 +1,7 @@
 from datetime import datetime
 from enum import Enum
 
-from sqlalchemy import DateTime, ForeignKey, Float, Integer
+from sqlalchemy import DateTime, ForeignKey, Float, String, Integer
 from sqlalchemy.sql import func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -18,7 +18,9 @@ class Transaction(Base, UserMixin):
     user_back_populates = 'transactions'
     amount: Mapped[float] = mapped_column(Float, nullable=False)
     price: Mapped[float] = mapped_column(Float, nullable=False)
-    transaction_type: Mapped[TransactionType]
+    transaction_type: Mapped[TransactionType] = mapped_column(
+        String, nullable=False
+    ) 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
@@ -47,5 +49,5 @@ class RiskMinimisation(Base, UserMixin):
         Integer, ForeignKey('currency.id'), nullable=False
     )
     currency: Mapped['Currency'] = relationship(
-        'Currency', back_populates='sales'
+        'Currency', back_populates='risk_points'
     )

@@ -6,29 +6,33 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from core.db import Base
 from models.mixins import UserMixin
 
+
 class Currency(Base, UserMixin):
+    lazy='selectin' 
     user_back_populates = 'currencies'
     name: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     quantity: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
     profit: Mapped[float] = mapped_column(Float, nullable=False)
-    sales: Mapped[list('Transaction')] = relationship(
+    sales: Mapped[list['Transaction']] = relationship(
         'Transaction',
         back_populates='currency',
         primaryjoin=(
             'and_(Transaction.currency_id==Currency.id, '
-            'Transaction.transaction_type==TransactionType.SALE)'
+            'Transaction.transaction_type=="sale")'
         ),
+        overlaps='purchases'
     )
-    purchases: Mapped[list('Transaction')] = relationship(
+    purchases: Mapped[list['Transaction']] = relationship(
         'Transaction',
         back_populates='currency',
         primaryjoin=(
             'and_(Transaction.currency_id==Currency.id, '
-            'Transaction.transaction_type==TransactionType.PURCHASE)'
+            'Transaction.transaction_type=="purchase")'
         ),
+        overlaps='sales'
     )
-    risk_points: Mapped[list('RiskMinimisation')] = relationship(
+    risk_points: Mapped[list['RiskMinimisation']] = relationship(
         'RiskMinimisation', back_populates='currency'
     )
 
