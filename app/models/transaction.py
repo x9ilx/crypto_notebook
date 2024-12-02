@@ -15,7 +15,7 @@ class TransactionType(Enum):
 
 
 class Transaction(Base, UserMixin):
-    user_back_populates = 'transactions'
+    __user_back_populates__ = 'transactions'
     amount: Mapped[float] = mapped_column(Float, nullable=False)
     price: Mapped[float] = mapped_column(Float, nullable=False)
     transaction_type: Mapped[TransactionType] = mapped_column(
@@ -37,7 +37,7 @@ class Transaction(Base, UserMixin):
 
 
 class RiskMinimisation(Base, UserMixin):
-    user_back_populates = 'risk_minisations'
+    __user_back_populates__ = 'risk_minisations'
     price: Mapped[float] = mapped_column(Float, nullable=False)
     transaction_id: Mapped[int] = mapped_column(
         Integer, ForeignKey('transaction.id'), nullable=False

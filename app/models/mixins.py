@@ -4,7 +4,7 @@ from sqlalchemy.orm import declared_attr, Mapped, mapped_column, relationship
 
 class UserMixin:
     __abstract__ = True
-    user_back_populates: str
+    __user_back_populates__: str
 
     user_id: Mapped[int] = mapped_column(
         Integer, 
@@ -16,5 +16,5 @@ class UserMixin:
     def user(cls) -> Mapped['models.user.User']:
         return relationship(
             'models.user.User',
-            back_populates=cls.user_back_populates
+            back_populates=cls.__user_back_populates__
         )

@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict, Field
 
-from models.transaction import Transaction, RiskMinimisation
+from schemas.transaction import TransactionResponse, RiskMinimisationResponse
 
 class CurrencyBase(BaseModel):
     name: str
@@ -10,18 +10,16 @@ class CurrencyBase(BaseModel):
 
 
 class CurrencyCreate(CurrencyBase):
-    pass
+    user_id: int
 
 
 class CurrencyUpdate(BaseModel):
     name: str | None
     description: str | None
-    quantity: float = Field(None, ge=0.0)
-    profit: float | None
 
 
 class CurrencyResponse(CurrencyBase):
     model_config = ConfigDict(from_attributes=True)
-    sales: list[Transaction] = None
-    purchases: list[Transaction] = None
-    risk_points: list[RiskMinimisation] = None
+    sales: list[TransactionResponse] = None
+    purchases: list[TransactionResponse] = None
+    risk_points: list[RiskMinimisationResponse] = None

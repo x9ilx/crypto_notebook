@@ -9,7 +9,7 @@ from models.mixins import UserMixin
 
 class Currency(Base, UserMixin):
     lazy='selectin' 
-    user_back_populates = 'currencies'
+    __user_back_populates__ = 'currencies'
     name: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     quantity: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
