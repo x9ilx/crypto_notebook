@@ -6,11 +6,10 @@ class CurrencyBase(BaseModel):
     name: str
     description: str | None
     quantity: float = Field(default=0.0, ge=0.0)
-    profit: float = Field(default=0.0)
 
 
 class CurrencyCreate(CurrencyBase):
-    user_id: int
+    pass
 
 
 class CurrencyUpdate(BaseModel):
@@ -20,6 +19,7 @@ class CurrencyUpdate(BaseModel):
 
 class CurrencyResponse(CurrencyBase):
     model_config = ConfigDict(from_attributes=True)
+    profit: float = Field(default=0.0)
     sales: list[TransactionResponse] = None
     purchases: list[TransactionResponse] = None
     risk_points: list[RiskMinimisationResponse] = None

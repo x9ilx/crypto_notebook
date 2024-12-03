@@ -2,8 +2,6 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from schemas.currency import CurrencyResponse
-
 
 class RiskMinimisationBase(BaseModel):
     price: float

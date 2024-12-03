@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from models.user import User
 
 ModelType = TypeVar('ModelType', bound=Base)
 CreateSchemaType = TypeVar('CreateSchemaType', bound=BaseModel)
@@ -52,7 +53,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return db_obj.scalars().first()
 
     async def get(
-        self, obj_id: int, session: AsyncSession
+        self,
+        obj_id: int,
+        session: AsyncSession
     ) -> Optional[ModelType]:
         db_obj = await session.execute(
             select(self.model).where(self.model.id == obj_id)
@@ -66,16 +69,18 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     async def create(
         self,
         obj_in: CreateSchemaType,
+        user: User,
         session: AsyncSession,
     ) -> Optional[ModelType]:
         obj_in_data = obj_in.model_dump()
-        db_obj = self.model(**obj_in_data)
+        db_obj = self.model(**obj_in_data, user_id=user.id)
         return await self._commit_and_refresh(db_obj, session)
 
     async def update(
         self,
         db_obj: ModelType,
         obj_in: UpdateSchemaType,
+        user: User,
         session: AsyncSession,
     ) -> Optional[ModelType]:
         obj_data = jsonable_encoder(db_obj)
@@ -86,7 +91,10 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return await self._commit_and_refresh(db_obj, session)
 
     async def delete(
-        self, db_obj: ModelType, session: AsyncSession
+        self,
+        db_obj: ModelType,
+        user: User,
+        session: AsyncSession
     ) -> ModelType:
         await session.delete(db_obj)
         await session.commit()
