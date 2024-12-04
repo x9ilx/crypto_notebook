@@ -20,9 +20,9 @@ router = APIRouter(
     response_model=CurrencyResponse,
     summary='Позволяет добавить новую монету в базу.'
 )
-def currency_create(
+async def currency_create(
     currency: CurrencyCreate,
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session)
 ) -> CurrencyResponse:
-    pass
+    return await currency_crud.create(currency, user, session)

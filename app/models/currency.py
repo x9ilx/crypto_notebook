@@ -13,7 +13,7 @@ class Currency(Base, UserMixin):
     name: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     quantity: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
-    profit: Mapped[float] = mapped_column(Float, nullable=False)
+    profit: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
     sales: Mapped[list['Transaction']] = relationship(
         'Transaction',
         back_populates='currency',
@@ -21,7 +21,8 @@ class Currency(Base, UserMixin):
             'and_(Transaction.currency_id==Currency.id, '
             'Transaction.transaction_type=="sale")'
         ),
-        overlaps='purchases'
+        overlaps='purchases',
+        lazy='joined'
     )
     purchases: Mapped[list['Transaction']] = relationship(
         'Transaction',
@@ -30,10 +31,13 @@ class Currency(Base, UserMixin):
             'and_(Transaction.currency_id==Currency.id, '
             'Transaction.transaction_type=="purchase")'
         ),
-        overlaps='sales'
+        overlaps='sales',
+        lazy='joined'
     )
     risk_points: Mapped[list['RiskMinimisation']] = relationship(
-        'RiskMinimisation', back_populates='currency'
+        'RiskMinimisation',
+        back_populates='currency',
+        lazy='joined'
     )
 
     def __repr__(self):
