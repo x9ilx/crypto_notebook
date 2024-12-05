@@ -43,5 +43,5 @@ class Currency(Base, UserMixin):
     def __repr__(self):
         return (
             f'<Currency(id={self.id}, name='
-            f'{self.name}, description={self.description}'
+            f'{self.name}, description={self.description}>'
         )

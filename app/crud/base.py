@@ -34,7 +34,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db_obj = await session.execute(
             select(self.model).where(
                 attr == value,
-                self.model.user_id == user
+                self.model.user_id == user.id
             )
         )
         return db_obj.scalars().all()
@@ -65,7 +65,10 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     ) -> list[ModelType]:
         attr = getattr(self.model, attribute)
         db_obj = await session.execute(
-            select(self.model).where(attr == value, self.model.user_id == user)
+            select(self.model).where(
+                attr == value,
+                self.model.user_id == user.id
+            )
         )
         return db_obj.scalars().first()
 
@@ -78,7 +81,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db_obj = await session.execute(
             select(self.model).where(
                 self.model.id == obj_id,
-                self.model.user_id == user
+                self.model.user_id == user.id
             )
         )
         return db_obj.scalars().first()
@@ -89,9 +92,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         session: AsyncSession
     ) -> list[ModelType]:
         db_obj = await session.execute(
-            select(self.model).where(self.model.user_id == user)
+            select(self.model).where(self.model.user_id == user.id)
         )
-        return db_obj.scalars().all()
+        return db_obj.scalars().unique().all()
 
     async def create(
         self,
