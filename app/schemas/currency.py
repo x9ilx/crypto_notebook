@@ -1,16 +1,20 @@
+import re
+
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from schemas.transaction import RiskMinimisationResponse, TransactionResponse
 
 
 class CurrencyBase(BaseModel):
-    name: str = Field(..., min_length=1, pattern=r'^[a-zA-Z0-9 _]*$')
+    name: str = Field(..., min_length=1)
     description: str | None
     quantity: float = Field(default=0.0, ge=0.0)
 
     @field_validator('name')
     def correct_name(cls, value: str):
-        if '$' in value:
-            raise ValueError('Введите название монеты без `$`')
+        if not re.compile(r'^[a-zA-Z0-9]*$').match(value):
+            raise ValueError(
+                'Название монеты может содержать только цифры и латинские буквы'
+            )
         return value.upper()
 
 
