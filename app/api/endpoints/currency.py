@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 from api.currency_validators import check_currency_exist, check_user_is_owner
 from core.db import get_async_session
 from core.users import current_user
@@ -41,6 +43,7 @@ async def currency_get(
     '/',
     response_model=CurrencyResponse,
     summary='Позволяет добавить новую монету в базу.',
+    status_code=HTTPStatus.CREATED
 )
 async def currency_create(
     currency: CurrencyCreate,
@@ -53,7 +56,7 @@ async def currency_create(
 @router.delete(
     '/',
     response_model=CurrencyResponse,
-    summary='Позволяет удалить монету из базы.',
+    summary='Позволяет удалить монету из базы.'
 )
 async def currency_delete(
     currency_id: int,

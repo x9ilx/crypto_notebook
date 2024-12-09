@@ -16,7 +16,7 @@ pytest_plugins = [
 ]
 
 
-DB_URL = 'sqlite+aiosqlite:///./test_db.db'
+DB_URL = 'sqlite+aiosqlite:///:memory:'
 ENGINE = create_async_engine(DB_URL, connect_args={'check_same_thread': False})
 TESTING_SESSION_LOCAL = sessionmaker(
     autocommit=False, autoflush=False, bind=ENGINE, class_=AsyncSession

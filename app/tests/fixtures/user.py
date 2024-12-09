@@ -18,7 +18,10 @@ async def auth_client():
     app.dependency_overrides = {}
     app.dependency_overrides[get_async_session] = override_db
     app.dependency_overrides[current_user] = lambda: user
-    async with AsyncClient(transport=ASGITransport(app=app), base_url='http://test') as client:
+    async with AsyncClient(
+        transport=ASGITransport(app=app),
+        base_url='http://test'
+    ) as client:
         yield client
 
 
@@ -26,5 +29,8 @@ async def auth_client():
 async def noauth_client():
     app.dependency_overrides = {}
     app.dependency_overrides[get_async_session] = override_db
-    async with AsyncClient(transport=ASGITransport(app=app), base_url='http://test') as client:
+    async with AsyncClient(
+        transport=ASGITransport(app=app),
+        base_url='http://test'
+    ) as client:
         yield client
