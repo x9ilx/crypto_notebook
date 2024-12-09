@@ -2,8 +2,6 @@ from http import HTTPStatus
 
 import pytest
 from fastapi.testclient import TestClient
-from httpx import Response
-from schemas.currency import CurrencyCreate, CurrencyResponse
 
 CURRENCY_URL = '/currency/'
 
@@ -11,41 +9,67 @@ CURRENCY_URL = '/currency/'
 class TestCreateCurrency:
     async def test_create_currency_no_authorized_user(
         self,
-        noauth_client: TestClient,
-        new_currency_schema: CurrencyCreate
+        noauth_client: TestClient
     ):
+        currency_data = {
+            'name': 'New Currency Name',
+            'description': 'New Currency Description',
+            'quantity': 10.0
+        }
         response = await noauth_client.post(
-            url=CURRENCY_URL, json=new_currency_schema.model_dump()
+            url=CURRENCY_URL, json=currency_data
         )
-        assert response.status_code == HTTPStatus.UNAUTHORIZED, 'Запрос должен вернуть ответ 401 - UNAUTHORIZED.'
+        assert response.status_code == HTTPStatus.UNAUTHORIZED, (
+            'Запрос должен вернуть ответ 401 - UNAUTHORIZED.'
+        )
 
 
     async def test_create_currency_authorized_user(
         self,
-        auth_client: TestClient,
-        new_currency_schema: CurrencyCreate
+        auth_client: TestClient
     ):
+        currency_data = {
+            'name': 'New Currency Name',
+            'description': 'New Currency Description',
+            'quantity': 10.0
+        }
+        expected_keys = {
+            'name',
+            'description',
+            'quantity',
+            'id',
+            'profit',
+            'sales',
+            'purchases',
+            'risk_points',
+        }
         response = await auth_client.post(
             url=CURRENCY_URL,
-            json=new_currency_schema.model_dump()
+            json=currency_data
         )
+        print(response.content)
         assert response.status_code == HTTPStatus.CREATED, (
             'Запрос должен вернуть ответ 201 - CREATED.'
         )
-        result: CurrencyResponse = CurrencyResponse(**response.json())
-        assert result.name == new_currency_schema.name, (
+        result = response.json()
+        missing_keys = expected_keys - result.keys()
+        assert not missing_keys, (
+            f'В ответе не хватает следующих ключей: '
+            f'`{"`, `".join(missing_keys)}`'
+        )
+        assert result['name'] == currency_data['name'].upper(), (
             'Название монеты не соответствует ожидаемому.'
         )
-        assert result.description == new_currency_schema.description, (
+        assert result['description'] == currency_data['description'], (
             'Описание монеты не соответствует ожидаемому.'
         )
-        assert result.quantity == new_currency_schema.quantity, (
+        assert result['quantity'] == currency_data['quantity'], (
             'Количество монет не соответствует ожидаемому.'
         )
-        assert result.profit == 0.0, 'У новой монеты не может быть прибыли.'
-        assert not result.sales, 'У новой монеты не может быть продаж.'
-        assert not result.purchases, 'У новой монеты не может быть покупок.'
-        assert not result.risk_points, (
+        assert result['profit'] == 0.0, 'У новой монеты не может быть прибыли.'
+        assert not result['sales'], 'У новой монеты не может быть продаж.'
+        assert not result['purchases'], 'У новой монеты не может быть покупок.'
+        assert not result['risk_points'], (
             'У новой монеты не может быть точек минимизации рисков.'
         )
 
@@ -58,10 +82,13 @@ class TestCreateCurrency:
     async def test_create_currency_bad_name(
         self,
         auth_client,
-        new_currency_schema,
         invalid_name
     ):
-        currency_data = new_currency_schema.model_dump()
+        currency_data = {
+            'name': invalid_name,
+            'description': 'New Currency Description',
+            'quantity': 10.0
+        }
         currency_data['name'] = invalid_name
         response = await auth_client.post(
             url=CURRENCY_URL,

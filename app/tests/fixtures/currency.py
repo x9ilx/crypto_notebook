@@ -2,13 +2,7 @@ import pytest
 
 from schemas.currency import CurrencyCreate
 
-@pytest.fixture
-def new_currency_schema():
-    return CurrencyCreate(
-        name='New Currency',
-        description='New Currency Description',
-        quantity=10.0
-    )
+
 # from datetime import datetime
 
 # import pytest
