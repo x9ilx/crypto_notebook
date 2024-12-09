@@ -7,4 +7,5 @@ class CRUDCurrency(CRUDBase[Currency, CurrencyCreate, CurrencyUpdate]):
     def __init__(self) -> None:
         super().__init__(Currency)
 
+
 currency_crud = CRUDCurrency()

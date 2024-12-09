@@ -1,14 +1,13 @@
 from typing import Optional
 
+from core.db import Base
+from models.mixins import UserMixin
 from sqlalchemy import Float, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from core.db import Base
-from models.mixins import UserMixin
-
 
 class Currency(Base, UserMixin):
-    lazy='selectin' 
+    lazy = 'selectin'
     __user_back_populates__ = 'currencies'
     name: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(String, nullable=True)
@@ -22,7 +21,7 @@ class Currency(Base, UserMixin):
             'Transaction.transaction_type=="sale")'
         ),
         overlaps='purchases',
-        lazy='joined'
+        lazy='joined',
     )
     purchases: Mapped[list['Transaction']] = relationship(
         'Transaction',
@@ -32,12 +31,10 @@ class Currency(Base, UserMixin):
             'Transaction.transaction_type=="purchase")'
         ),
         overlaps='sales',
-        lazy='joined'
+        lazy='joined',
     )
     risk_points: Mapped[list['RiskMinimisation']] = relationship(
-        'RiskMinimisation',
-        back_populates='currency',
-        lazy='joined'
+        'RiskMinimisation', back_populates='currency', lazy='joined'
     )
 
     def __repr__(self):

@@ -2,11 +2,10 @@ from typing import Any, Generic, Optional, TypeVar
 
 from core.db import Base
 from fastapi.encoders import jsonable_encoder
+from models.user import User
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from models.user import User
 
 ModelType = TypeVar('ModelType', bound=Base)
 CreateSchemaType = TypeVar('CreateSchemaType', bound=BaseModel)
@@ -24,17 +23,12 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return obj
 
     async def _get_by_attribute(
-        self,
-        attribute: str,
-        value: str,
-        user: User,
-        session: AsyncSession
+        self, attribute: str, value: str, user: User, session: AsyncSession
     ) -> list[ModelType]:
         attr = getattr(self.model, attribute)
         db_obj = await session.execute(
             select(self.model).where(
-                attr == value,
-                self.model.user_id == user.id
+                attr == value, self.model.user_id == user.id
             )
         )
         return db_obj.scalars().all()
@@ -57,39 +51,28 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return result.scalars().all()
 
     async def _get_first_by_attribute(
-        self,
-        attribute: str,
-        value: str,
-        user: User,
-        session: AsyncSession
+        self, attribute: str, value: str, user: User, session: AsyncSession
     ) -> list[ModelType]:
         attr = getattr(self.model, attribute)
         db_obj = await session.execute(
             select(self.model).where(
-                attr == value,
-                self.model.user_id == user.id
+                attr == value, self.model.user_id == user.id
             )
         )
         return db_obj.scalars().first()
 
     async def get(
-        self,
-        obj_id: int,
-        user: User,
-        session: AsyncSession
+        self, obj_id: int, user: User, session: AsyncSession
     ) -> Optional[ModelType]:
         db_obj = await session.execute(
             select(self.model).where(
-                self.model.id == obj_id,
-                self.model.user_id == user.id
+                self.model.id == obj_id, self.model.user_id == user.id
             )
         )
         return db_obj.scalars().first()
 
     async def get_all(
-        self,
-        user: User,
-        session: AsyncSession
+        self, user: User, session: AsyncSession
     ) -> list[ModelType]:
         db_obj = await session.execute(
             select(self.model).where(self.model.user_id == user.id)
@@ -120,9 +103,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return await self._commit_and_refresh(db_obj, session)
 
     async def delete(
-        self,
-        db_obj: ModelType,
-        session: AsyncSession
+        self, db_obj: ModelType, session: AsyncSession
     ) -> ModelType:
         await session.delete(db_obj)
         await session.commit()

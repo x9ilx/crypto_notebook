@@ -1,11 +1,8 @@
 from crud.base import CRUDBase
 from models.transaction import RiskMinimisation, Transaction
-from schemas.transaction import (
-    TransactionCreate,
-    TransactionUpdate,
-    RiskMinimisationCreate,
-    RiskMinimisationUpdate
-)
+from schemas.transaction import (RiskMinimisationCreate,
+                                 RiskMinimisationUpdate, TransactionCreate,
+                                 TransactionUpdate)
 
 
 class CRUDRiskMinimisation(

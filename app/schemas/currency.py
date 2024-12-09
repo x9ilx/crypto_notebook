@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict, Field
+from schemas.transaction import RiskMinimisationResponse, TransactionResponse
 
-from schemas.transaction import TransactionResponse, RiskMinimisationResponse
 
 class CurrencyBase(BaseModel):
     name: str

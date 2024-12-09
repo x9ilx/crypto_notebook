@@ -1,13 +1,13 @@
 from contextlib import asynccontextmanager
 
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+# from frontend.routers import frontend_router
+from services.users import create_user
+
 from api.routers import main_router
 from core.config import settings
 from core.db import async_session_maker
-from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
-
-# from frontend.routers import frontend_router
-from services.users import create_user
 
 
 @asynccontextmanager
@@ -15,7 +15,7 @@ async def lifespan(app: FastAPI):
     await create_user(
         email=settings.db.first_superuser_email,
         password=settings.db.first_superuser_password,
-        is_superuser=True
+        is_superuser=True,
     )
     yield
 

@@ -3,13 +3,11 @@
 Revision ID: 23c5fcfd41f1
 Revises: 53a88cbc36bd
 Create Date: 2024-11-22 15:07:15.957620
-
 """
 from typing import Sequence, Union
 
-from alembic import op
 import sqlalchemy as sa
-
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision: str = '23c5fcfd41f1'
