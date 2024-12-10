@@ -1,6 +1,5 @@
 import pytest
 import pytest_asyncio # noqa
-from mixer.backend.sqlalchemy import Mixer as _mixer
 from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
@@ -43,9 +42,3 @@ async def init_db():
     await database_action_with_engine(Base.metadata.create_all)
     yield
     await database_action_with_engine(Base.metadata.drop_all)
-
-
-@pytest.fixture
-async def mixer(override_db):
-    async with override_db() as session:
-        return _mixer(session=session, commit=True)
