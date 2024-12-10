@@ -28,7 +28,7 @@ class TestCreateCurrency:
     ):
         response = await auth_client.get(
             url=CURRENCY_DETAILS_URL.format(
-                currency_id=generate_in_db_1_currencies.id
+                currency_id=generate_in_db_1_currencies['id']
             )
         )
         result = response.json()
