@@ -1,4 +1,5 @@
 import re
+from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from schemas.transaction import RiskMinimisationResponse, TransactionResponse
@@ -6,11 +7,12 @@ from schemas.transaction import RiskMinimisationResponse, TransactionResponse
 
 class CurrencyBase(BaseModel):
     name: str = Field(..., min_length=1)
-    description: str | None
+    description: Optional[str] = None
     quantity: float = Field(default=0.0, ge=0.0)
 
     @field_validator('name')
-    def correct_name(cls, value: str):
+    @classmethod
+    def correct_name(cls, value: str) -> str:
         if not re.compile(r'^[a-zA-Z0-9]*$').match(value):
             raise ValueError(
                 'Название монеты может содержать только цифры и латинские буквы'
@@ -23,8 +25,8 @@ class CurrencyCreate(CurrencyBase):
 
 
 class CurrencyUpdate(BaseModel):
-    name: str | None
-    description: str | None
+    name: Optional[str] = None
+    description: Optional[str] = None
 
 
 class CurrencyResponse(CurrencyBase):

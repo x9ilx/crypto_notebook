@@ -99,6 +99,8 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         update_data = obj_in.model_dump(exclude_unset=True)
         for field in obj_data:
             if field in update_data:
+                if update_data[field] == 'null':
+                    update_data[field] = None
                 setattr(db_obj, field, update_data[field])
         return await self._commit_and_refresh(db_obj, session)
 
