@@ -20,6 +20,20 @@ class TestCreateCurrency:
             'Ответ на запрос должен быть 401 - UNAUTHORIZED'
         )
 
+    async def test_get_currencies_noauth_user(
+        self,
+        generate_in_db_1_currencies,
+        noauth_client
+    ):
+        response = await noauth_client.get(
+            url=CURRENCY_DETAILS_URL.format(
+                currency_id=generate_in_db_1_currencies['id']
+            )
+        )
+        assert response.status_code == HTTPStatus.UNAUTHORIZED, (
+            'Ответ на запрос должен быть 401 - UNAUTHORIZED'
+        )
+
     async def test_get_currency_details_auth_user(
         self,
         generate_in_db_1_currencies,
@@ -182,4 +196,80 @@ class TestCreateCurrency:
         assert result['profit'] == 0, (
             'При попытке указать прибыль для новой монеты, '
             'прибыль должна остаться 0.'
+        )
+
+    async def test_update_currencies_noauth_user(
+        self,
+        generate_in_db_1_currencies,
+        noauth_client
+    ):
+        response = await noauth_client.patch(
+            url=CURRENCY_DETAILS_URL.format(
+                currency_id=generate_in_db_1_currencies['id']
+            )
+        )
+        assert response.status_code == HTTPStatus.UNAUTHORIZED, (
+            'Ответ на запрос должен быть 401 - UNAUTHORIZED'
+        )
+
+    @pytest.mark.parametrize(
+        'update_data',
+        [
+            {
+                'name': 'UPDATEDNAME',
+                'description': 'Updated Description'
+            },
+            {
+                'name': 'UPDATEDNAME'
+            },
+            {
+                'description': 'Updated Description'
+            }
+        ],
+        ids=['full epdate', 'name update', 'description update']
+    )
+    async def test_update_currency_authorized_user(
+        self,
+        generate_in_db_1_currencies,
+        currency_expected_keys,
+        update_data,
+        auth_client
+    ):
+        response = await auth_client.patch(
+            url=CURRENCY_DETAILS_URL.format(
+                currency_id=generate_in_db_1_currencies['id']
+            ),
+            json=update_data
+        )
+        assert response.status_code == HTTPStatus.OK, (
+            'Ответ на запрос должен быть 200 - OK.'
+        )
+        result = response.json()
+        missing_keys = currency_expected_keys - result.keys()
+        assert not missing_keys, (
+            f'В ответе не хватает следующих ключей: '
+            f'`{"`, `".join(missing_keys)}`'
+        )
+        if 'name' in update_data:
+            assert result['name'] == update_data['name'].upper(), (
+                'Название монеты не соответствует ожидаемому.'
+            )
+        if 'description' in update_data:
+            assert result['description'] == update_data['description'], (
+                'Описание монеты не соответствует ожидаемому.'
+            )
+        assert result['quantity'] == generate_in_db_1_currencies['quantity'], (
+            'Количество монет не соответствует ожидаемому.'
+        )
+        assert result['profit'] == generate_in_db_1_currencies['profit'], (
+            'Значение прибыли не соответствует ожидаемому.'
+        )
+        assert not result['sales'], (
+            'Список продаж монеты не соответствует ожидаемому'
+        )
+        assert not result['purchases'], (
+            'Список покупок монеты не соответствует ожидаемому'
+        )
+        assert not result['risk_points'], (
+            'Список минимизации рисков монеты не соответствует ожидаемому'
         )
