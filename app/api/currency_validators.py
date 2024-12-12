@@ -29,7 +29,7 @@ async def check_user_is_owner(
     currency: Currency = await check_currency_exist(
         currency_id=currency_id, user=user, session=session
     )
-    if currency and currency.user != user:
+    if currency.user_id != user.id:
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST,
             detail='Только владелец монеты может её удалить',

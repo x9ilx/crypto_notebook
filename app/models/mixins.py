@@ -13,5 +13,7 @@ class UserMixin:
     @declared_attr
     def user(cls) -> Mapped['models.user.User']:
         return relationship(
-            'models.user.User', back_populates=cls.__user_back_populates__
+            'models.user.User',
+            back_populates=cls.__user_back_populates__,
+            lazy='joined'
         )

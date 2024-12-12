@@ -7,6 +7,8 @@ from models.user import User
 
 user = User(
     id=100,
+    email='test@test.test',
+    hashed_password='test_password0',
     is_active=True,
     is_verified=True,
     is_superuser=False

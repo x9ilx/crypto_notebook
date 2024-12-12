@@ -2,7 +2,6 @@ from http import HTTPStatus
 
 import pytest
 
-from models.currency import Currency
 
 CURRENCY_URL = '/currency/'
 CURRENCY_DETAILS_URL = CURRENCY_URL + '{currency_id}'
@@ -17,7 +16,8 @@ class TestCreateCurrency:
             url=CURRENCY_URL
         )
         assert response.status_code == HTTPStatus.UNAUTHORIZED, (
-            'Ответ на запрос должен быть 401 - UNAUTHORIZED'
+            'Ответ на запрос должен быть 401 - UNAUTHORIZED\n'
+            f'content={response.content}'
         )
 
     async def test_get_currencies_noauth_user(
@@ -31,7 +31,8 @@ class TestCreateCurrency:
             )
         )
         assert response.status_code == HTTPStatus.UNAUTHORIZED, (
-            'Ответ на запрос должен быть 401 - UNAUTHORIZED'
+            'Ответ на запрос должен быть 401 - UNAUTHORIZED\n'
+            f'content={response.content}'
         )
 
     async def test_get_currency_details_auth_user(
@@ -47,7 +48,8 @@ class TestCreateCurrency:
         )
         result = response.json()
         assert response.status_code == HTTPStatus.OK, (
-            'Ответ на запрос должен быть 200 - OK'
+            'Ответ на запрос должен быть 200 - OK\n'
+            f'content={response.content}'
         )
         missing_keys = (
             currency_expected_keys - result.keys()
@@ -57,6 +59,20 @@ class TestCreateCurrency:
             f'`{"`, `".join(missing_keys)}`.'
         )
 
+    async def test_get_details_currency_wrong_id(
+        self,
+        auth_client
+    ):
+        response = await auth_client.patch(
+            url=CURRENCY_DETAILS_URL.format(
+                currency_id='100500'
+            ),
+            json={}
+        )
+        assert response.status_code == HTTPStatus.NOT_FOUND, (
+            f'Ответ на запрос должен быть 404 - NOT_FOUND.\n'
+            f'content={response.content}'
+        )
 
     async def test_get_all_currencies_auth_user(
         self,
@@ -69,7 +85,8 @@ class TestCreateCurrency:
         )
         result = response.json()
         assert response.status_code == HTTPStatus.OK, (
-            'Ответ на запрос должен быть 200 - OK'
+            'Ответ на запрос должен быть 200 - OK\n'
+            f'content={response.content}'
         )
         resut_len = len(result)
         currency_list_len = len(generate_in_db_3_currencies)
@@ -84,6 +101,7 @@ class TestCreateCurrency:
                 f'`{"`, `".join(missing_keys)}`.'
             )
         [item.pop('user_id') for item in generate_in_db_3_currencies]
+        [item.pop('user') for item in generate_in_db_3_currencies]
         assert result == generate_in_db_3_currencies, (
             'Тело ответа отличается от ожидаемого.'
         )
@@ -97,7 +115,8 @@ class TestCreateCurrency:
             url=CURRENCY_URL, json=new_currency_data
         )
         assert response.status_code == HTTPStatus.UNAUTHORIZED, (
-            'Ответ на запрос должен быть 401 - UNAUTHORIZED.'
+            'Ответ на запрос должен быть 401 - UNAUTHORIZED.\n'
+            f'content={response.content}'
         )
 
 
@@ -112,7 +131,8 @@ class TestCreateCurrency:
             json=new_currency_data
         )
         assert response.status_code == HTTPStatus.CREATED, (
-            'Ответ на запрос должен быть 201 - CREATED.'
+            'Ответ на запрос должен быть 201 - CREATED.\n'
+            f'content={response.content}'
         )
         result = response.json()
         missing_keys = currency_expected_keys - result.keys()
@@ -154,7 +174,8 @@ class TestCreateCurrency:
             json=new_currency_data
         )
         assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY, (
-            'Ответ на запрос должен быть 422 - UNPROCESSABLE ENTITY.'
+            'Ответ на запрос должен быть 422 - UNPROCESSABLE ENTITY.\n'
+            f'content={response.content}'
         )
 
 
@@ -175,7 +196,8 @@ class TestCreateCurrency:
             json=new_currency_data
         )
         assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY, (
-            'Ответ на запрос должен быть 422 - UNPROCESSABLE ENTITY.'
+            'Ответ на запрос должен быть 422 - UNPROCESSABLE ENTITY.\n'
+            f'content={response.content}'
         )
 
 
@@ -198,7 +220,7 @@ class TestCreateCurrency:
             'прибыль должна остаться 0.'
         )
 
-    async def test_update_currencies_noauth_user(
+    async def test_update_currency_noauth_user(
         self,
         generate_in_db_1_currencies,
         noauth_client
@@ -209,7 +231,23 @@ class TestCreateCurrency:
             )
         )
         assert response.status_code == HTTPStatus.UNAUTHORIZED, (
-            'Ответ на запрос должен быть 401 - UNAUTHORIZED'
+            'Ответ на запрос должен быть 401 - UNAUTHORIZED\n'
+            f'content={response.content}'
+        )
+
+    async def test_update_currency_wrong_id(
+        self,
+        auth_client
+    ):
+        response = await auth_client.patch(
+            url=CURRENCY_DETAILS_URL.format(
+                currency_id='100500'
+            ),
+            json={}
+        )
+        assert response.status_code == HTTPStatus.NOT_FOUND, (
+            f'Ответ на запрос должен быть 404 - NOT_FOUND.\n'
+            f'content={response.content}'
         )
 
     @pytest.mark.parametrize(
@@ -224,9 +262,22 @@ class TestCreateCurrency:
             },
             {
                 'description': 'Updated Description'
+            },
+            {
+                
+            },
+            {
+                'name': 'UPDATEDNAME',
+                'description': 'null'
             }
         ],
-        ids=['full epdate', 'name update', 'description update']
+        ids=[
+            'full update',
+            'name update',
+            'description update',
+            'empty',
+            'description - null'
+        ]
     )
     async def test_update_currency_authorized_user(
         self,
@@ -242,7 +293,8 @@ class TestCreateCurrency:
             json=update_data
         )
         assert response.status_code == HTTPStatus.OK, (
-            'Ответ на запрос должен быть 200 - OK.'
+            'Ответ на запрос должен быть 200 - OK.\n'
+            f'content={response.content}'
         )
         result = response.json()
         missing_keys = currency_expected_keys - result.keys()
@@ -255,6 +307,8 @@ class TestCreateCurrency:
                 'Название монеты не соответствует ожидаемому.'
             )
         if 'description' in update_data:
+            if update_data['description'] == 'null':
+                update_data['description'] = None
             assert result['description'] == update_data['description'], (
                 'Описание монеты не соответствует ожидаемому.'
             )
@@ -272,4 +326,62 @@ class TestCreateCurrency:
         )
         assert not result['risk_points'], (
             'Список минимизации рисков монеты не соответствует ожидаемому'
+        )
+
+    async def test_get_all_currencies_noauth_user(
+        self,
+        generate_in_db_1_currencies,
+        noauth_client
+    ):
+        response = await noauth_client.delete(
+            url=CURRENCY_DETAILS_URL.format(
+                currency_id=generate_in_db_1_currencies['id']
+            )
+        )
+        assert response.status_code == HTTPStatus.UNAUTHORIZED, (
+            'Ответ на запрос должен быть 401 - UNAUTHORIZED\n'
+            f'content={response.content}'
+        )
+
+
+    async def test_delete_currency_wrong_id(
+        self,
+        auth_client
+    ):
+        response = await auth_client.delete(
+            url=CURRENCY_DETAILS_URL.format(
+                currency_id='100500'
+            )
+        )
+        assert response.status_code == HTTPStatus.NOT_FOUND, (
+            f'Ответ на запрос должен быть 404 - NOT_FOUND.\n'
+            f'content={response.content}'
+        )
+
+    async def test_delete_currency_auth_user(
+        self,
+        generate_in_db_1_currencies,
+        currency_expected_keys,
+        auth_client
+    ):
+        response = await auth_client.delete(
+            url=CURRENCY_DETAILS_URL.format(
+                currency_id=generate_in_db_1_currencies['id']
+            )
+        )
+        assert response.status_code == HTTPStatus.OK, (
+            f'Ответ на запрос должен быть 200 - OK.\n'
+            f'content={response.content}'
+        )
+        delete_result = response.json()
+        generate_in_db_1_currencies.pop('user')
+        generate_in_db_1_currencies.pop('user_id')
+        missing_keys = currency_expected_keys - delete_result.keys()
+        assert not missing_keys, (
+            f'В ответе не хватает следующих ключей: '
+            f'`{"`, `".join(missing_keys)}`'
+        )
+        assert generate_in_db_1_currencies == delete_result, (
+            'При удалении вернулись неверные данные. '
+            'Возможно удалён не тот объект'
         )

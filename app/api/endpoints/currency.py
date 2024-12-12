@@ -77,7 +77,7 @@ async def currency_update(
 
 
 @router.delete(
-    '/',
+    '/{currency_id}',
     response_model=CurrencyResponse,
     summary='Позволяет удалить монету из базы.'
 )

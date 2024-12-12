@@ -1,7 +1,7 @@
 import pytest
 
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy import select
+from sqlalchemy import delete, select
 
 from conftest import override_db
 from models.currency import Currency
@@ -49,7 +49,7 @@ async def generate_in_db_3_currencies():
         yield [
             jsonable_encoder(item) for item in result.scalars().unique().all()
         ]
-        Currency.__table__.delete()
+        await session.execute(delete(Currency))
         await session.commit()
 
 
@@ -66,5 +66,5 @@ async def generate_in_db_1_currencies():
         await session.commit()
         result = await session.execute(select(Currency))
         yield  jsonable_encoder(result.scalars().unique().first())
-        Currency.__table__.delete()
+        await session.execute(delete(Currency))
         await session.commit()
