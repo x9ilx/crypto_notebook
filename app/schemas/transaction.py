@@ -1,28 +1,14 @@
 from datetime import datetime
+from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
-
-class RiskMinimisationBase(BaseModel):
-    price: float
-
-
-class RiskMinimisationCreate(RiskMinimisationBase):
-    currency_id: int
-    transaction_id: int
-
-
-class RiskMinimisationUpdate(RiskMinimisationBase):
-    pass
-
-
-class RiskMinimisationResponse(RiskMinimisationBase):
-    model_config = ConfigDict(from_attributes=True)
-    transaction_id: int
-    currency_id: int
+from models.transaction import TransactionType
+from schemas.service import RiskMinimisationResponse
 
 
 class TransactionBase(BaseModel):
+    transaction_type: TransactionType
     amount: float
     price: float
 
@@ -32,8 +18,8 @@ class TransactionCreate(TransactionBase):
 
 
 class TransactionUpdate(BaseModel):
-    amount: float | None
-    price: float | None
+    amount: Optional[float] = None
+    price: Optional[float] = None
 
 
 class TransactionResponse(TransactionBase):
