@@ -36,6 +36,26 @@ class Currency(Base, UserMixin):
     risk_points: Mapped[list['RiskMinimisation']] = relationship(
         'RiskMinimisation', back_populates='currency', lazy='joined'
     )
+    service_sales_points: Mapped[list['Service']] = relationship(
+        'Service',
+        back_populates='currency',
+        primaryjoin=(
+            'and_(Service.currency_id==Currency.id, '
+            'Service.service_type=="sale")'
+        ),
+        overlaps='service_purchases_points',
+        lazy='joined',
+    )
+    service_purchases_points: Mapped[list['Service']] = relationship(
+        'Service',
+        back_populates='currency',
+        primaryjoin=(
+            'and_(Service.currency_id==Currency.id, '
+            'Service.service_type=="purchase")'
+        ),
+        overlaps='service_sales_points',
+        lazy='joined',
+    )
 
     def __repr__(self):
         return (
