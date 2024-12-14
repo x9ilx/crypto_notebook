@@ -1,12 +1,13 @@
 from http import HTTPStatus
 from typing import Optional
 
+from fastapi import HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from api.base_validators import check_object_exist
 from crud.currency import currency_crud
-from fastapi import HTTPException
 from models.currency import Currency
 from models.user import User
-from sqlalchemy.ext.asyncio import AsyncSession
 
 
 async def check_currency_exist(

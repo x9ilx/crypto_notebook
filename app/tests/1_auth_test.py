@@ -1,6 +1,7 @@
 REGISTER_URL = '/auth/register'
 
-class TestAuth():
+
+class TestAuth:
     async def test_register(self, noauth_client):
         user_data = {
             'email': 'test@test.com',
@@ -9,9 +10,9 @@ class TestAuth():
         response = await noauth_client.post(REGISTER_URL, json=user_data)
         assert (
             response.status_code == 201,
-            'Запрос должен вернуть ответ 201 - CREATED.'
+            'Запрос должен вернуть ответ 201 - CREATED.',
         )
-        
+
         data = response.json()
         expected_keys = {
             'id',

@@ -15,5 +15,5 @@ class UserMixin:
         return relationship(
             'models.user.User',
             back_populates=cls.__user_back_populates__,
-            lazy='joined'
+            lazy='joined',
         )

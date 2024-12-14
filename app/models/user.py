@@ -1,9 +1,10 @@
-from core.db import Base
 from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
+from sqlalchemy.orm import Mapped, relationship
+
+from core.db import Base
 from models.currency import Currency
 from models.services import RiskMinimisation, Service
 from models.transaction import Transaction
-from sqlalchemy.orm import Mapped, relationship
 
 
 class User(SQLAlchemyBaseUserTable[int], Base):

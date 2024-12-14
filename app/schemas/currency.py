@@ -2,6 +2,7 @@ import re
 from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
+
 from schemas.service import RiskMinimisationResponse, ServiceResponse
 from schemas.transaction import TransactionResponse
 
@@ -31,11 +32,11 @@ class CurrencyUpdate(BaseModel):
 
 
 class CurrencyResponse(CurrencyBase):
-    id: int
     model_config = ConfigDict(from_attributes=True)
+    id: int
     profit: float = Field(default=0.0)
     sales: list[TransactionResponse] = []
     purchases: list[TransactionResponse] = []
-    risk_points: list[RiskMinimisationResponse] = []
+    risk_minimisation_points: list[RiskMinimisationResponse] = []
     service_sales_points: list[ServiceResponse] = []
     service_purchases_points: list[ServiceResponse] = []

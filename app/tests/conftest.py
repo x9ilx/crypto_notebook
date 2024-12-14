@@ -1,18 +1,15 @@
 import pytest
-import pytest_asyncio # noqa
+import pytest_asyncio  # noqa
 from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from core.db import Base, get_async_session # noqa
-from core.users import current_user # noqa
-from main import app # noqa
-from schemas.users import UserCreate # noqa
+from core.db import Base, get_async_session  # noqa
+from core.users import current_user  # noqa
+from main import app  # noqa
+from schemas.users import UserCreate  # noqa
 
-pytest_plugins = [
-    'tests.fixtures.user',
-    'tests.fixtures.currency'
-]
+pytest_plugins = ['tests.fixtures.user', 'tests.fixtures.currency']
 
 
 DB_URL = 'sqlite+aiosqlite:///:memory:'

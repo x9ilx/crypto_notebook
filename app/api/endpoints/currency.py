@@ -1,15 +1,19 @@
+from datetime import datetime
 from http import HTTPStatus
+
+from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.currency_validators import check_currency_exist, check_user_is_owner
 from core.db import get_async_session
 from core.users import current_user
 from crud.currency import currency_crud
-from fastapi import APIRouter, Depends
 from models.user import User
 from schemas.currency import CurrencyCreate, CurrencyResponse, CurrencyUpdate
-from sqlalchemy.ext.asyncio import AsyncSession
+from schemas.transaction import (TransactionCreate, TransactionResponse,
+                                 TransactionType)
 
-router = APIRouter(prefix='/currency', tags=['currency'])
+router = APIRouter(prefix='/currency', tags=['Currency'])
 
 
 @router.get(
@@ -43,7 +47,7 @@ async def currency_get(
     '/',
     response_model=CurrencyResponse,
     summary='Позволяет добавить новую монету в базу.',
-    status_code=HTTPStatus.CREATED
+    status_code=HTTPStatus.CREATED,
 )
 async def currency_create(
     currency: CurrencyCreate,
@@ -57,29 +61,27 @@ async def currency_create(
     '/{currency_id}',
     response_model=CurrencyResponse,
     summary='Позволяет обновить информацию о монете.',
-    description='Для установки пустого значения необходимо отправить null'
+    description='Для установки пустого значения необходимо отправить null',
 )
 async def currency_update(
     currency_id: int,
     currency: CurrencyUpdate,
     user: User = Depends(current_user),
-    session: AsyncSession = Depends(get_async_session)
+    session: AsyncSession = Depends(get_async_session),
 ):
     return await currency_crud.update(
         db_obj=await check_currency_exist(
-            currency_id=currency_id,
-            user=user,
-            session=session
+            currency_id=currency_id, user=user, session=session
         ),
         obj_in=currency,
-        session=session
+        session=session,
     )
 
 
 @router.delete(
     '/{currency_id}',
     response_model=CurrencyResponse,
-    summary='Позволяет удалить монету из базы.'
+    summary='Позволяет удалить монету из базы.',
 )
 async def currency_delete(
     currency_id: int,
@@ -91,4 +93,27 @@ async def currency_delete(
             currency_id=currency_id, user=user, session=session
         ),
         session,
+    )
+
+
+@router.post(
+    '/{currency_id}/purchases',
+    response_model=TransactionResponse,
+    summary='Позволяет создать запись о покупке монеты',
+)
+async def currency_add_purchase(
+    currency_id: int,
+    purchase: TransactionCreate,
+    user: User = Depends(current_user),
+    session: AsyncSession = Depends(get_async_session),
+):
+    purchase._transaction_type = TransactionType.PURCHASE
+    currency = await check_currency_exist(currency_id, user, session)
+    purchase._currency_id = currency.id
+    print(purchase)
+    return TransactionResponse(
+        amount=1,
+        price=1.1,
+        created_at=datetime.now(),
+        currency_id=currency_id,
     )

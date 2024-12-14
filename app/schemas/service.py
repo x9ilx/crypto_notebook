@@ -1,7 +1,8 @@
-from pydantic import BaseModel, ConfigDict, Field
 from typing import Optional
 
-from models.services import ServiceType
+from pydantic import BaseModel, ConfigDict, Field
+
+from models.transaction import TransactionType
 
 
 class RiskMinimisationBase(BaseModel):
@@ -24,7 +25,7 @@ class RiskMinimisationResponse(RiskMinimisationBase):
 
 
 class ServiceBase(BaseModel):
-    service_type: ServiceType
+    service_type: TransactionType
     investments: float
     price: float
 
