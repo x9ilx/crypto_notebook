@@ -107,7 +107,7 @@ async def transaction_update(
         session=session
     )
     return await transaction_crud.delete(
-        transaction=await check_transaction_exist(
+        db_obj=await check_transaction_exist(
             transaction_id=transaction_id,
             user=user,
             session=session
