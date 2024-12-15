@@ -1,0 +1,47 @@
+volumes:
+  crypto_notebook_postgres_data:
+  crypto_notebook_static:
+
+services:
+  crypto_notebook_db:
+    restart: always
+    image: postgres:13
+    env_file:      
+      - './.env'
+    volumes:
+      - crypto_notebook_postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - crypto_notebook_network
+
+  crypto_notebook_fastapi_app:
+    build:
+      context: ./app
+    volumes:
+      - ./app:/app
+      - crypto_notebook_static:/app/static
+    env_file:      
+      - './.env'
+    depends_on:
+      - crypto_notebook_db
+    ports:
+      - "8000:8000"  
+    networks:
+      - crypto_notebook_network
+
+  crypto_notebook_nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - crypto_notebook_static:/usr/share/nginx/html/static
+    ports:
+      - "80:80"
+    depends_on:
+      - crypto_notebook_fastapi_app
+    networks:
+      - crypto_notebook_network
+
+
+networks:
+  crypto_notebook_network:
