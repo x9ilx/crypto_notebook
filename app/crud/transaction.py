@@ -10,6 +10,9 @@ from models.user import User
 from schemas.transaction import TransactionCreate, TransactionUpdate
 
 
+RISK_MINIMAISATION_MULTIPLER = 2
+
+
 class CRUDTransaction(
     CRUDBase[Transaction, TransactionCreate, TransactionUpdate]
 ):
@@ -37,7 +40,7 @@ class CRUDTransaction(
         )
         if new_transaction._transaction_type == TransactionType.PURCHASE:
             risk_minimisation = RiskMinimisation(
-                price=new_obj.price * 2,
+                price=new_obj.price * RISK_MINIMAISATION_MULTIPLER,
                 transaction_id=new_obj.id,
                 currency_id=new_obj.currency_id,
                 user_id=new_obj.user_id,
@@ -46,6 +49,25 @@ class CRUDTransaction(
                 obj=risk_minimisation, session=session
             )
         return new_obj
+
+    async def update_transaction(
+        self,
+        transaction: Transaction,
+        updated_transaction: TransactionUpdate,
+        session: AsyncSession,
+    ):
+        if (
+            transaction.transaction_type == TransactionType.PURCHASE and
+            updated_transaction.price
+        ):
+            transaction.risk_minimisation_point.price = (
+                updated_transaction.price * RISK_MINIMAISATION_MULTIPLER
+            )
+        return await super().update(
+            db_obj=transaction,
+            obj_in=updated_transaction,
+            session=session
+        )
 
 
 transaction_crud = CRUDTransaction()
