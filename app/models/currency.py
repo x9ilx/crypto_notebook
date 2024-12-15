@@ -23,6 +23,7 @@ class Currency(Base, UserMixin):
         ),
         overlaps='purchases',
         lazy='joined',
+        cascade='all, delete-orphan'
     )
     purchases: Mapped[list['Transaction']] = relationship(
         'Transaction',
@@ -32,12 +33,12 @@ class Currency(Base, UserMixin):
         ),
         overlaps='sales',
         lazy='joined',
-        cascade='all, delete',
+        cascade='all, delete-orphan',
     )
     risk_minimisation_points: Mapped[list['RiskMinimisation']] = relationship(
         'RiskMinimisation',
-        primaryjoin='RiskMinimisation.currency_id==Currency.id',
         lazy='joined',
+        cascade='all, delete-orphan'
     )
     service_sales_points: Mapped[list['Service']] = relationship(
         'Service',
@@ -47,7 +48,7 @@ class Currency(Base, UserMixin):
         ),
         overlaps='service_purchases_points',
         lazy='joined',
-        cascade='all, delete',
+        cascade='all, delete-orphan'
     )
     service_purchases_points: Mapped[list['Service']] = relationship(
         'Service',
@@ -57,7 +58,7 @@ class Currency(Base, UserMixin):
         ),
         overlaps='service_sales_points',
         lazy='joined',
-        cascade='all, delete',
+        cascade='all, delete-orphan'
     )
 
     def __repr__(self):

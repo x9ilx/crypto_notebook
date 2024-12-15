@@ -34,7 +34,7 @@ class Transaction(Base, UserMixin):
         'RiskMinimisation',
         primaryjoin='RiskMinimisation.transaction_id==Transaction.id',
         lazy='joined',
-        cascade='all, delete',
+        cascade='all, delete-orphan',
     )
     currency_id: Mapped[int] = mapped_column(
         Integer, ForeignKey('currency.id'), nullable=False
