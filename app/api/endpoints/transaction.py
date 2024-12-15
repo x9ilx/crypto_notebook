@@ -88,3 +88,29 @@ async def transaction_update(
         updated_transaction=transaction_update,
         session=session
     )
+
+
+@router.delete(
+    '/{transaction_id}',
+    response_model=TransactionResponse,
+    summary='Позволяет удалить запись о покупке монеты.',
+)
+async def transaction_update(
+    currency_id: int,
+    transaction_id: int,
+    user: User = Depends(current_user),
+    session: AsyncSession = Depends(get_async_session),
+):
+    await check_user_is_owner(
+        currency_id=currency_id,
+        user=user,
+        session=session
+    )
+    return await transaction_crud.delete(
+        transaction=await check_transaction_exist(
+            transaction_id=transaction_id,
+            user=user,
+            session=session
+        ),
+        session=session
+    )
