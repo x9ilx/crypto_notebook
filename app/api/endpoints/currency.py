@@ -8,10 +8,10 @@ from api.currency_validators import check_currency_exist, check_user_is_owner
 from core.db import get_async_session
 from core.users import current_user
 from crud.currency import currency_crud
+from models.transaction import TransactionType
 from models.user import User
 from schemas.currency import CurrencyCreate, CurrencyResponse, CurrencyUpdate
-from schemas.transaction import (TransactionCreate, TransactionResponse,
-                                 TransactionType)
+from schemas.transaction import TransactionCreate, TransactionResponse
 
 router = APIRouter(prefix='/currency', tags=['Currency'])
 
