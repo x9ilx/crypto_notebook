@@ -1,5 +1,6 @@
-from fastapi_users_db_sqlalchemy.access_token import \
-    SQLAlchemyBaseAccessTokenTable
+from fastapi_users_db_sqlalchemy.access_token import (
+    SQLAlchemyBaseAccessTokenTable,
+)
 from sqlalchemy import ForeignKey, Integer
 from sqlalchemy.orm import Mapped, declared_attr, mapped_column
 

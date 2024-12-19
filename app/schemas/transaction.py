@@ -1,23 +1,18 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, Field, PrivateAttr
+from pydantic import BaseModel, ConfigDict
 
-from models.transaction import TransactionType
 from schemas.service import RiskMinimisationResponse
 
 
 class TransactionBase(BaseModel):
-    _transaction_type: TransactionType = PrivateAttr(
-        default=TransactionType.PURCHASE
-    )
     amount: float
     price: float
 
 
 class TransactionCreate(TransactionBase):
-    _currency_id: int
-    _user_id: int
+    pass
 
 
 class TransactionUpdate(BaseModel):

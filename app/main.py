@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from api.routers import main_router
 from core.config import settings
 from core.db import async_session_maker
+
 # from frontend.routers import frontend_router
 from services.users import create_user
 

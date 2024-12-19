@@ -81,10 +81,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return db_obj.scalars().unique().all()
 
     async def create(
-        self,
-        obj_in: CreateSchemaType,
-        user: User,
-        session: AsyncSession,
+        self, obj_in: CreateSchemaType, user: User, session: AsyncSession
     ) -> Optional[ModelType]:
         obj_in_data = obj_in.model_dump()
         db_obj = self.model(**obj_in_data, user_id=user.id)

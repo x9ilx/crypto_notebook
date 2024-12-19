@@ -1,8 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, Field
-
-from models.transaction import TransactionType
+from pydantic import BaseModel, ConfigDict
 
 
 class RiskMinimisationBase(BaseModel):
@@ -25,13 +23,12 @@ class RiskMinimisationResponse(RiskMinimisationBase):
 
 
 class ServiceBase(BaseModel):
-    service_type: TransactionType
     investments: float
     price: float
 
 
 class ServiceCreate(ServiceBase):
-    currency_id: int
+    pass
 
 
 class ServiceUpdate(BaseModel):
@@ -41,4 +38,5 @@ class ServiceUpdate(BaseModel):
 
 class ServiceResponse(ServiceBase):
     model_config = ConfigDict(from_attributes=True)
+    id: int
     currency_id: int
