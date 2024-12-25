@@ -20,6 +20,13 @@ class RiskMinimisation(Base, UserMixin):
         Integer, ForeignKey('currency.id'), nullable=False
     )
 
+    def __repr__(self):
+        return (
+            f'<RiskMinimisation(id={self.id}, price={self.price}, '
+            f'transaction_id={self.transaction_id}, '
+            f'currency_id={self.currency_id}>'
+        )
+
 
 class Service(Base, UserMixin):
     __user_back_populates__ = 'services'
@@ -34,3 +41,10 @@ class Service(Base, UserMixin):
     currency_id: Mapped[int] = mapped_column(
         Integer, ForeignKey('currency.id'), nullable=False
     )
+
+    def __repr__(self):
+        return (
+            f'<Service(id={self.id}, investments={self.investments}, '
+            f'price={self.price}, service_type={self.service_type}, '
+            f'currency_id={self.currency_id}>'
+        )

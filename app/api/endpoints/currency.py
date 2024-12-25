@@ -4,7 +4,7 @@ from http import HTTPStatus
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.currency_validators import check_currency_exist, check_user_is_owner
+from api.currency_validators import check_currency_exist
 from core.db import get_async_session
 from core.users import current_user
 from crud.currency import currency_crud
@@ -89,7 +89,7 @@ async def currency_delete(
     session: AsyncSession = Depends(get_async_session),
 ) -> CurrencyResponse:
     return await currency_crud.delete(
-        await check_user_is_owner(
+        await check_currency_exist(
             currency_id=currency_id, user=user, session=session
         ),
         session,

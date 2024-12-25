@@ -39,3 +39,10 @@ class Transaction(Base, UserMixin):
     currency_id: Mapped[int] = mapped_column(
         Integer, ForeignKey('currency.id'), nullable=False
     )
+
+    def __repr__(self):
+        return (
+            f'<Transaction(id={self.id}, currency_id={self.currency_id}, '
+            f'amount={self.amount}, price={self.price}, '
+            f'transaction_type={self.transaction_type}>'
+        )

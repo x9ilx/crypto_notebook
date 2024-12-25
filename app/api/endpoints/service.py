@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.currency_validators import check_user_is_owner
+from api.currency_validators import check_currency_exist
 from api.service_validators import check_service_exist
 from core.db import get_async_session
 from core.users import current_user
@@ -27,7 +27,7 @@ async def currency_add_purchase_plan(
     session: AsyncSession = Depends(get_async_session),
 ):
     return await service_crud.create_service(
-        currency=await check_user_is_owner(
+        currency=await check_currency_exist(
             currency_id=currency_id, user=user, session=session
         ),
         new_service=purchase_plan,
@@ -49,7 +49,7 @@ async def currency_add_sale_plan(
     session: AsyncSession = Depends(get_async_session),
 ):
     return await service_crud.create_service(
-        currency=await check_user_is_owner(
+        currency=await check_currency_exist(
             currency_id=currency_id, user=user, session=session
         ),
         new_service=sale_plan,
@@ -71,7 +71,7 @@ async def transaction_update(
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session),
 ):
-    await check_user_is_owner(
+    await check_currency_exist(
         currency_id=currency_id, user=user, session=session
     )
     return await service_crud.update(
@@ -94,14 +94,12 @@ async def transaction_update(
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session),
 ):
-    await check_user_is_owner(
+    await check_currency_exist(
         currency_id=currency_id, user=user, session=session
     )
     return await service_crud.delete(
         db_obj=await check_service_exist(
-            service_id=service_id,
-            user=user,
-            session=session
+            service_id=service_id, user=user, session=session
         ),
         session=session,
     )

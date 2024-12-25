@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import pytest
 import pytest_asyncio  # noqa
 from sqlalchemy import create_engine
@@ -9,7 +11,12 @@ from core.users import current_user  # noqa
 from main import app  # noqa
 from schemas.users import UserCreate  # noqa
 
-pytest_plugins = ['tests.fixtures.user', 'tests.fixtures.currency']
+pytest_plugins = [
+    'tests.fixtures.user',
+    'tests.fixtures.currency',
+    'tests.fixtures.transaction',
+    'tests.fixtures.services',
+]
 
 
 DB_URL = 'sqlite+aiosqlite:///:memory:'
@@ -39,3 +46,9 @@ async def init_db():
     await database_action_with_engine(Base.metadata.create_all)
     yield
     await database_action_with_engine(Base.metadata.drop_all)
+
+
+@pytest.fixture
+def freeze_data(freezer):
+    freezer.move_to('2010-10-10')
+    return datetime.now()
