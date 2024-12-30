@@ -1,10 +1,13 @@
+from http import HTTPStatus
 from typing import Optional
 
+from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.base_validators import check_object_exist
 from crud.transaction import transaction_crud
-from models.transaction import Transaction
+from models.currency import Currency
+from models.transaction import Transaction, TransactionType
 from models.user import User
 
 
@@ -20,3 +23,13 @@ async def check_transaction_exist(
         user=user,
         session=session,
     )
+
+async def check_transaction_amount_is_valid_for_sale(
+    currency: Currency,
+    amount: float
+) -> None:
+    if  currency.quantity - amount < 0:
+        raise HTTPException(
+            status_code=HTTPStatus.BAD_REQUEST,
+            detail='Невозможно продать больше монет, чем есть в наличии.'
+        )
