@@ -94,26 +94,3 @@ async def currency_delete(
         ),
         session,
     )
-
-
-@router.post(
-    '/{currency_id}/purchases',
-    response_model=TransactionResponse,
-    summary='Позволяет создать запись о покупке монеты',
-)
-async def currency_add_purchase(
-    currency_id: int,
-    purchase: TransactionCreate,
-    user: User = Depends(current_user),
-    session: AsyncSession = Depends(get_async_session),
-):
-    purchase._transaction_type = TransactionType.PURCHASE
-    currency = await check_currency_exist(currency_id, user, session)
-    purchase._currency_id = currency.id
-    print(purchase)
-    return TransactionResponse(
-        amount=1,
-        price=1.1,
-        created_at=datetime.now(),
-        currency_id=currency_id,
-    )
