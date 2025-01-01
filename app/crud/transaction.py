@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from crud.base import CRUDBase
@@ -31,7 +29,7 @@ class CRUDTransaction(
             price=new_transaction.price,
             transaction_type=transaction_type,
             currency_id=currency.id,
-            created_at=datetime.now(),
+            created_at=new_transaction.create_at,
             user_id=user.id,
         )
         currency.purchases.append(transaction)

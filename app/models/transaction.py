@@ -26,10 +26,7 @@ class Transaction(Base, UserMixin):
         ),
         nullable=False,
     )
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-        server_default=func.now(),
-    )
+    created_at: Mapped[datetime] = mapped_column(DateTime)
     risk_minimisation_point: Mapped['RiskMinimisation'] = relationship(
         'RiskMinimisation',
         primaryjoin='RiskMinimisation.transaction_id==Transaction.id',
