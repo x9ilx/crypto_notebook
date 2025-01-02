@@ -4,6 +4,10 @@ from httpx import ASGITransport, AsyncClient
 
 from models.user import User
 
+
+REGISTER_URL = '/auth/register'
+
+
 user = User(
     id=100,
     email='test@test.test',

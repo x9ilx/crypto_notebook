@@ -46,9 +46,3 @@ async def init_db():
     await database_action_with_engine(Base.metadata.create_all)
     yield
     await database_action_with_engine(Base.metadata.drop_all)
-
-
-@pytest.fixture
-def freeze_data(freezer):
-    freezer.move_to('2010-10-10')
-    return date.now()

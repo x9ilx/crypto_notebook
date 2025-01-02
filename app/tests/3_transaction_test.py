@@ -4,58 +4,45 @@ import pytest
 
 from crud.transaction import RISK_MINIMAISATION_MULTIPLER
 from models.transaction import TransactionType
-
-TRANSACTION_URL = '/currency/' + '{currency_id}' + '/transaction'
-TRANSACTION_DETAILS_URL = (
-    '/currency/' + '{currency_id}' + '/transaction/' + '{transaction_id}'
+from tests.fixtures.transaction import (
+    CORRET_TRANSACTIONS_AND_ENPOINTS_LIST,
+    TRANSACTION_URL,
+    TRANSACTION_PURCHASE_ENDPOINT,
+    TRANSACTION_SALE_ENDPOINT
 )
-TRANSACTION_PURCHASE_ENDPOINT = '/purchases'
-TRANSACTION_SALE_ENDPOINT = '/sales'
 
 
 class TestTransaction:
+    @pytest.mark.parametrize(
+        'transaction_data, endpoint',
+        CORRET_TRANSACTIONS_AND_ENPOINTS_LIST,
+        ids=['purchase', 'sale'],
+    )
     async def test_create_currency_no_authorized_user(
         self,
         generate_in_db_1_currencies,
-        new_purchase_transaction_data,
+        transaction_data,
+        endpoint,
         noauth_client
     ):
         response = await noauth_client.post(
             url=TRANSACTION_URL.format(
                 currency_id=generate_in_db_1_currencies['id']
-            ),
-            json=new_purchase_transaction_data,
+            ) + endpoint,
+            json=transaction_data,
         )
-        assert response.status_code == HTTPStatus.NOT_FOUND, (
-            'Ответ на запрос должен быть 404 - NOT FOUND.\n'
+        assert response.status_code == HTTPStatus.UNAUTHORIZED, (
+            'Ответ на запрос должен быть 401 - UNAUTHORIZED.\n'
             f'content={response.content}'
         )
 
     @pytest.mark.parametrize(
         'transaction_data, endpoint',
-        [
-            (
-                {
-                    'amount': 10,
-                    'price': 0.1,
-                    'transaction_type': TransactionType.PURCHASE.name,
-                },
-                TRANSACTION_PURCHASE_ENDPOINT,
-            ),
-            (
-                {
-                    'amount': 10,
-                    'price': 0.1,
-                    'transaction_type': TransactionType.SALE.name,
-                },
-                TRANSACTION_SALE_ENDPOINT,
-            ),
-        ],
+        CORRET_TRANSACTIONS_AND_ENPOINTS_LIST,
         ids=['purchase', 'sale'],
     )
     async def test_create_transaction_authorized_user(
         self,
-        freeze_data,
         generate_in_db_1_currencies,
         transaction_expected_keys,
         risk_minimisation_expected_keys,
@@ -89,8 +76,8 @@ class TestTransaction:
         assert (
             result['price'] == transaction_data['price']
         ), 'Стоимость монет не соответствует ожидаемому.'
-        assert result['created_at'] == str(freeze_data).replace(
-            ' ', 'T'
+        assert (
+            result['created_at'] == transaction_data['created_at']
         ), 'Дата создания транзакции не соответствует ожидаемой.'
         if endpoint == TRANSACTION_PURCHASE_ENDPOINT:
             assert result['risk_minimisation_point'], (
@@ -122,12 +109,17 @@ class TestTransaction:
                 generate_in_db_1_currencies['id']
             ), 'Точки минимизации рисков привязана не к той монете.'
 
-
-    async def test_change_currency_quantity_on_purchase_transaction(
+    @pytest.mark.parametrize(
+        'transaction_data, endpoint',
+        CORRET_TRANSACTIONS_AND_ENPOINTS_LIST,
+        ids=['purchase', 'sale'],
+    )
+    async def test_change_currency_quantity_on_transaction(
         self,
         generate_in_db_1_currencies,
         get_currency_from_db,
-        new_purchase_transaction_data,
+        transaction_data,
+        endpoint,
         auth_client,
     ):
         old_currency_quantitty = generate_in_db_1_currencies['quantity']
@@ -135,8 +127,8 @@ class TestTransaction:
             url=TRANSACTION_URL.format(
                 currency_id=generate_in_db_1_currencies['id']
             )
-            + TRANSACTION_PURCHASE_ENDPOINT,
-            json=new_purchase_transaction_data,
+            + endpoint,
+            json=transaction_data,
         )
         assert response.status_code == HTTPStatus.OK, (
             'Ответ на запрос должен быть 200 - OK.\n'
@@ -145,49 +137,28 @@ class TestTransaction:
         currency = await get_currency_from_db(
             currency_id=generate_in_db_1_currencies['id']
         )
-        assert currency.quantity == (
-            old_currency_quantitty + new_purchase_transaction_data['amount']
-        ), (
-            'При покупке монеты количество должно '
-            'увеличить на на количество при покупке.'
-        )
-
-    async def test_change_currency_quantity_on_sale_transaction(
-        self,
-        generate_in_db_1_currencies,
-        get_currency_from_db,
-        new_sale_transaction_data,
-        auth_client,
-    ):
-        old_currency_quantitty = generate_in_db_1_currencies['quantity']
-        response = await auth_client.post(
-            url=TRANSACTION_URL.format(
-                currency_id=generate_in_db_1_currencies['id']
+        if endpoint == TRANSACTION_PURCHASE_ENDPOINT:
+            assert currency.quantity == (
+                old_currency_quantitty + transaction_data['amount']
+            ), (
+                'При покупке монеты количество должно '
+                'увеличить на на количество указанное в транзакции.'
             )
-            + TRANSACTION_SALE_ENDPOINT,
-            json=new_sale_transaction_data,
-        )
-        assert response.status_code == HTTPStatus.OK, (
-            'Ответ на запрос должен быть 200 - OK.\n'
-            f'content={response.content}'
-        )
-        currency = await get_currency_from_db(
-            currency_id=generate_in_db_1_currencies['id']
-        )
-        assert currency.quantity == (
-            old_currency_quantitty - new_sale_transaction_data['amount']
-        ), (
-            'При продаже монеты количество должно '
-            'уменьшиться на количество при покупке.'
-        )
+        else:
+            assert currency.quantity == (
+                old_currency_quantitty - transaction_data['amount']
+            ), (
+                'При продаже монеты количество должно '
+                'уменьшится на на количество указанное в транзакции.'
+            )
 
     async def test_sell_more_than_have(
         self,
         generate_in_db_1_currencies,
-        new_sale_transaction_data,
         auth_client,
     ):
-        new_sale_transaction_data['amount'] = (
+        transaction_data = CORRET_TRANSACTIONS_AND_ENPOINTS_LIST[1][0]
+        transaction_data['amount'] = (
             generate_in_db_1_currencies['quantity'] * 2
         )
         response = await auth_client.post(
@@ -195,7 +166,7 @@ class TestTransaction:
                 currency_id=generate_in_db_1_currencies['id']
             )
             + TRANSACTION_SALE_ENDPOINT,
-            json=new_sale_transaction_data,
+            json=transaction_data,
         )
         assert response.status_code == HTTPStatus.BAD_REQUEST, (
             'Ответ на запрос должен быть 400 - BAD REQUEST.\n'
@@ -208,43 +179,105 @@ class TestTransaction:
             {
                 'amount': -1,
                 'price': 0.1,
+                'created_at': '2010-10-10',
                 'transaction_type': TransactionType.PURCHASE.name,
             },
             {
                 'amount': 0,
                 'price': 0.1,
+                'created_at': '2010-10-10',
                 'transaction_type': TransactionType.PURCHASE.name,
             },
             {
                 'price': 0.1,
+                'created_at': '2010-10-10',
                 'transaction_type': TransactionType.PURCHASE.name,
             },
                         {
                 'amount': 1,
                 'price': -1,
+                'created_at': '2010-10-10',
                 'transaction_type': TransactionType.PURCHASE.name,
             },
             {
                 'amount': 1,
                 'price': 0,
+                'created_at': '2010-10-10',
                 'transaction_type': TransactionType.PURCHASE.name,
             },
             {
                 'amount': 1,
+                'created_at': '2010-10-10',
+                'transaction_type': TransactionType.PURCHASE.name,
+            },
+            {
+                'amount': 1,
+                'price': 1,
                 'transaction_type': TransactionType.PURCHASE.name,
             },
             {
                 'transaction_type': TransactionType.PURCHASE.name,
+            },
+            {
+                'amount': -1,
+                'price': 0.1,
+                'created_at': '2010-10-10',
+                'transaction_type': TransactionType.SALE.name,
+            },
+            {
+                'amount': 0,
+                'price': 0.1,
+                'created_at': '2010-10-10',
+                'transaction_type': TransactionType.SALE.name,
+            },
+            {
+                'price': 0.1,
+                'created_at': '2010-10-10',
+                'transaction_type': TransactionType.SALE.name,
+            },
+                        {
+                'amount': 1,
+                'price': -1,
+                'created_at': '2010-10-10',
+                'transaction_type': TransactionType.SALE.name,
+            },
+            {
+                'amount': 1,
+                'price': 0,
+                'created_at': '2010-10-10',
+                'transaction_type': TransactionType.SALE.name,
+            },
+            {
+                'amount': 1,
+                'created_at': '2010-10-10',
+                'transaction_type': TransactionType.SALE.name,
+            },
+            {
+                'amount': 1,
+                'price': 1,
+                'transaction_type': TransactionType.SALE.name,
+            },
+            {
+                'transaction_type': TransactionType.SALE.name,
             }
         ],
         ids=[
-            'negative amount',
-            'zero amount',
-            'no amount',
-            'negative price',
-            'zero price',
-            'no price',
-            'no amount, no price'
+            'purchase negative amount',
+            'purchase zero amount',
+            'purchase no amount',
+            'purchase negative price',
+            'purchase zero price',
+            'purchase no price',
+            'purchase no created date',
+            'purchase no amount, no price, no created date',
+            'sale negative amount',
+            'sale zero amount',
+            'sale no amount',
+            'sale negative price',
+            'sale zero price',
+            'sale no price',
+            'sale no created date',
+            'sale no amount, no price, no created date'
         ],
     )
     async def test_create_transaction_bad_params(

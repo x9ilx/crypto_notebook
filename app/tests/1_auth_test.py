@@ -1,4 +1,4 @@
-REGISTER_URL = '/auth/register'
+from tests.fixtures.user import REGISTER_URL
 
 
 class TestAuth:

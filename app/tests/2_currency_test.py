@@ -2,8 +2,7 @@ from http import HTTPStatus
 
 import pytest
 
-CURRENCY_URL = '/currency/'
-CURRENCY_DETAILS_URL = CURRENCY_URL + '{currency_id}'
+from tests.fixtures.currency import CURRENCY_URL, CURRENCY_DETAILS_URL
 
 
 class TestCurrency:

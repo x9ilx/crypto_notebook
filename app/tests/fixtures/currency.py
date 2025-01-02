@@ -9,6 +9,10 @@ from models.user import User
 from .user import user, user2
 
 
+CURRENCY_URL = '/currency/'
+CURRENCY_DETAILS_URL = CURRENCY_URL + '{currency_id}'
+
+
 def generate_currency(name: str, current_user: User):
     return Currency(
         name=name,
