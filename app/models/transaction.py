@@ -1,7 +1,7 @@
-from datetime import datetime
+from datetime import date
 from enum import Enum
 
-from sqlalchemy import DateTime
+from sqlalchemy import Date
 from sqlalchemy import Enum as saEnum
 from sqlalchemy import Float, ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -26,7 +26,7 @@ class Transaction(Base, UserMixin):
         ),
         nullable=False,
     )
-    created_at: Mapped[datetime] = mapped_column(DateTime)
+    created_at: Mapped[date] = mapped_column(Date)
     risk_minimisation_point: Mapped['RiskMinimisation'] = relationship(
         'RiskMinimisation',
         primaryjoin='RiskMinimisation.transaction_id==Transaction.id',

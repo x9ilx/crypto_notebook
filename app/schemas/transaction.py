@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -9,7 +9,7 @@ from schemas.service import RiskMinimisationResponse
 class TransactionBase(BaseModel):
     amount: float = Field(gt=0.0)
     price: float = Field(gt=0.0)
-    create_at: datetime
+    created_at: date
 
 
 class TransactionCreate(TransactionBase):
@@ -19,7 +19,7 @@ class TransactionCreate(TransactionBase):
 class TransactionUpdate(BaseModel):
     amount: Optional[float] = Field(None, gt=0.0)
     price: Optional[float] = Field(None, gt=0.0)
-    create_at: Optional[datetime] = None
+    created_at: Optional[date] = None
 
 
 class TransactionResponse(TransactionBase):

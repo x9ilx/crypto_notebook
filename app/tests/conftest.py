@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 
 import pytest
 import pytest_asyncio  # noqa
@@ -51,4 +51,4 @@ async def init_db():
 @pytest.fixture
 def freeze_data(freezer):
     freezer.move_to('2010-10-10')
-    return datetime.now()
+    return date.now()

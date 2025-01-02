@@ -1,9 +1,6 @@
-from datetime import datetime
-from enum import Enum
-
 from sqlalchemy import Enum as saEnum
 from sqlalchemy import Float, ForeignKey, Integer
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 
 from core.db import Base
 from models.mixins import UserMixin
