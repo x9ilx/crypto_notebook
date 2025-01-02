@@ -4,8 +4,37 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy import delete, select
 
 from models.currency import Currency
+from models.user import User
 
-from .user import user
+from .user import user, user2
+
+
+CURRENCY_URL = '/currency/'
+CURRENCY_DETAILS_URL = CURRENCY_URL + '{currency_id}'
+
+
+def generate_currency(name: str, current_user: User):
+    return Currency(
+        name=name,
+        description=f'currency desc',
+        quantity=500,
+        user_id=current_user.id,
+    )
+
+
+async def delete_all_currencies():
+    async for session in override_db():
+        await session.execute(delete(Currency))
+        await session.commit()
+
+
+async def create_currency_in_db(currency: Currency):
+    async for session in override_db():
+        session.add(currency)
+        await session.commit()
+        result = await session.execute(select(Currency))
+        yield jsonable_encoder(result.scalars().unique().first())
+        await delete_all_currencies()
 
 
 @pytest.fixture
@@ -58,16 +87,26 @@ async def generate_in_db_3_currencies():
 
 @pytest.fixture
 async def generate_in_db_1_currencies():
-    async for session in override_db():
-        currency = Currency(
-            name=f'CURRENCY',
-            description=f'currency desc',
-            quantity=500,
-            user_id=user.id,
-        )
-        session.add(currency)
-        await session.commit()
-        result = await session.execute(select(Currency))
-        yield jsonable_encoder(result.scalars().unique().first())
-        await session.execute(delete(Currency))
-        await session.commit()
+    async for currency in create_currency_in_db(
+        generate_currency(name='CURRENCYUSER1', current_user=user)
+    ):
+        yield currency
+
+
+@pytest.fixture
+async def generate_in_db_1_currencies_user2():
+    async for currency in create_currency_in_db(
+        generate_currency(name='CURRENCYUSER2', current_user=user2)
+    ):
+        yield currency
+
+
+@pytest.fixture
+async def get_currency_from_db():
+    async def make_get_currency_from_db(currency_id: int=1):
+        async for session in override_db():
+            result = await session.execute(
+                select(Currency).where(Currency.id == currency_id)
+            )
+            return result.scalars().first()
+    return make_get_currency_from_db

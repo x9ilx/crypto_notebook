@@ -2,11 +2,10 @@ from http import HTTPStatus
 
 import pytest
 
-CURRENCY_URL = '/currency/'
-CURRENCY_DETAILS_URL = CURRENCY_URL + '{currency_id}'
+from tests.fixtures.currency import CURRENCY_URL, CURRENCY_DETAILS_URL
 
 
-class TestCreateCurrency:
+class TestCurrency:
     async def test_get_all_currencies_noauth_user(self, noauth_client):
         response = await noauth_client.get(url=CURRENCY_URL)
         assert response.status_code == HTTPStatus.UNAUTHORIZED, (
@@ -44,6 +43,19 @@ class TestCreateCurrency:
         assert not missing_keys, (
             f'В ответе не хватает следующих ключей: '
             f'`{"`, `".join(missing_keys)}`.'
+        )
+
+    async def test_get_currency_details_another_user(
+        self, generate_in_db_1_currencies_user2, auth_client
+    ):
+        response = await auth_client.get(
+            url=CURRENCY_DETAILS_URL.format(
+                currency_id=generate_in_db_1_currencies_user2['id']
+            )
+        )
+        assert response.status_code == HTTPStatus.NOT_FOUND, (
+            'Ответ на запрос должен быть 404 - NOT FOUND\n'
+            f'content={response.content}'
         )
 
     async def test_get_details_currency_wrong_id(self, auth_client):

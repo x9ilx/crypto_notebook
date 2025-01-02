@@ -18,6 +18,7 @@ class RiskMinimisationUpdate(RiskMinimisationBase):
 
 class RiskMinimisationResponse(RiskMinimisationBase):
     model_config = ConfigDict(from_attributes=True)
+    id: int
     transaction_id: int
     currency_id: int
 

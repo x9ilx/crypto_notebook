@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from crud.base import CRUDBase
@@ -31,7 +29,7 @@ class CRUDTransaction(
             price=new_transaction.price,
             transaction_type=transaction_type,
             currency_id=currency.id,
-            created_at=datetime.now(),
+            created_at=new_transaction.created_at,
             user_id=user.id,
         )
         currency.purchases.append(transaction)
@@ -45,10 +43,8 @@ class CRUDTransaction(
                 currency_id=new_obj.currency_id,
                 user_id=new_obj.user_id,
             )
-            new_obj.risk_minimisation_point = await self._commit_and_refresh(
-                obj=risk_minimisation, session=session
-            )
-        return new_obj
+            new_obj.risk_minimisation_point = risk_minimisation
+        return await self._commit_and_refresh(obj=new_obj, session=session)
 
     async def update_transaction(
         self,

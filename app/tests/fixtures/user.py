@@ -4,9 +4,22 @@ from httpx import ASGITransport, AsyncClient
 
 from models.user import User
 
+
+REGISTER_URL = '/auth/register'
+
+
 user = User(
     id=100,
     email='test@test.test',
+    hashed_password='test_password0',
+    is_active=True,
+    is_verified=True,
+    is_superuser=False,
+)
+
+user2 = User(
+    id=200,
+    email='test2@test2.test2',
     hashed_password='test_password0',
     is_active=True,
     is_verified=True,

@@ -1,8 +1,11 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.currency_validators import check_user_is_owner
-from api.transaction_validators import check_transaction_exist
+from api.currency_validators import check_currency_exist
+from api.transaction_validators import (
+    check_transaction_amount_is_valid_for_sale,
+    check_transaction_exist
+)
 from core.db import get_async_session
 from core.users import current_user
 from crud.transaction import transaction_crud
@@ -30,10 +33,12 @@ async def currency_add_purchase(
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session),
 ):
+    currency = await check_currency_exist(
+        currency_id=currency_id, user=user, session=session
+    )
+    currency.quantity += purchase.amount
     return await transaction_crud.create_transaction(
-        currency=await check_user_is_owner(
-            currency_id=currency_id, user=user, session=session
-        ),
+        currency=currency,
         new_transaction=purchase,
         transaction_type=TransactionType.PURCHASE,
         user=user,
@@ -52,10 +57,16 @@ async def currency_add_sale(
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session),
 ):
+    currency = await check_currency_exist(
+        currency_id=currency_id, user=user, session=session
+    )
+    currency.quantity -= sale.amount
+    await check_transaction_amount_is_valid_for_sale(
+        currency=currency,
+        amount=sale.amount
+    )
     return await transaction_crud.create_transaction(
-        currency=await check_user_is_owner(
-            currency_id=currency_id, user=user, session=session
-        ),
+        currency=currency,
         new_transaction=sale,
         transaction_type=TransactionType.SALE,
         user=user,
@@ -75,7 +86,7 @@ async def transaction_update(
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session),
 ):
-    await check_user_is_owner(
+    await check_currency_exist(
         currency_id=currency_id, user=user, session=session
     )
     return await transaction_crud.update_transaction(
@@ -98,7 +109,7 @@ async def transaction_update(
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session),
 ):
-    await check_user_is_owner(
+    await check_currency_exist(
         currency_id=currency_id, user=user, session=session
     )
     return await transaction_crud.delete(

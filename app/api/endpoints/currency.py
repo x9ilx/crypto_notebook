@@ -1,10 +1,9 @@
-from datetime import datetime
 from http import HTTPStatus
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.currency_validators import check_currency_exist, check_user_is_owner
+from api.currency_validators import check_currency_exist
 from core.db import get_async_session
 from core.users import current_user
 from crud.currency import currency_crud
@@ -89,31 +88,8 @@ async def currency_delete(
     session: AsyncSession = Depends(get_async_session),
 ) -> CurrencyResponse:
     return await currency_crud.delete(
-        await check_user_is_owner(
+        await check_currency_exist(
             currency_id=currency_id, user=user, session=session
         ),
         session,
-    )
-
-
-@router.post(
-    '/{currency_id}/purchases',
-    response_model=TransactionResponse,
-    summary='Позволяет создать запись о покупке монеты',
-)
-async def currency_add_purchase(
-    currency_id: int,
-    purchase: TransactionCreate,
-    user: User = Depends(current_user),
-    session: AsyncSession = Depends(get_async_session),
-):
-    purchase._transaction_type = TransactionType.PURCHASE
-    currency = await check_currency_exist(currency_id, user, session)
-    purchase._currency_id = currency.id
-    print(purchase)
-    return TransactionResponse(
-        amount=1,
-        price=1.1,
-        created_at=datetime.now(),
-        currency_id=currency_id,
     )

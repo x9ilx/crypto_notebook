@@ -1,3 +1,5 @@
+from datetime import date
+
 import pytest
 import pytest_asyncio  # noqa
 from sqlalchemy import create_engine
@@ -9,7 +11,12 @@ from core.users import current_user  # noqa
 from main import app  # noqa
 from schemas.users import UserCreate  # noqa
 
-pytest_plugins = ['tests.fixtures.user', 'tests.fixtures.currency']
+pytest_plugins = [
+    'tests.fixtures.user',
+    'tests.fixtures.currency',
+    'tests.fixtures.transaction',
+    'tests.fixtures.services',
+]
 
 
 DB_URL = 'sqlite+aiosqlite:///:memory:'

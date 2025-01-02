@@ -18,21 +18,9 @@ async def check_currency_exist(
     return await check_object_exist(
         object_id=currency_id,
         crud_class=currency_crud,
-        error_text=f'Монеты с id {currency_id} не существует.',
+        error_text=(
+            f'Монеты с id {currency_id} не существует у текущего пользователя.'
+        ),
         user=user,
         session=session,
     )
-
-
-async def check_user_is_owner(
-    currency_id: int, user: User, session: AsyncSession
-):
-    currency: Currency = await check_currency_exist(
-        currency_id=currency_id, user=user, session=session
-    )
-    if currency.user_id != user.id:
-        raise HTTPException(
-            status_code=HTTPStatus.BAD_REQUEST,
-            detail='Только владелец монеты может её удалить',
-        )
-    return currency
