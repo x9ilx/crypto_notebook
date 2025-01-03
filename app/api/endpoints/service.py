@@ -88,7 +88,7 @@ async def transaction_update(
     response_model=ServiceResponse,
     summary='Позволяет удалить запись о запланированном действии.',
 )
-async def transaction_update(
+async def transaction_delete(
     currency_id: int,
     service_id: int,
     user: User = Depends(current_user),

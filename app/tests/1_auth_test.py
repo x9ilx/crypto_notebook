@@ -8,10 +8,10 @@ class TestAuth:
             'password': 'test',
         }
         response = await noauth_client.post(REGISTER_URL, json=user_data)
-        assert (
-            response.status_code == 201,
-            'Запрос должен вернуть ответ 201 - CREATED.',
+        assert response.status_code == 201, (
+            'Запрос должен вернуть ответ 201 - CREATED.'
         )
+        
 
         data = response.json()
         expected_keys = {

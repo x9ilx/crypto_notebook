@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from api.base_validators import check_object_exist
 from crud.transaction import transaction_crud
 from models.currency import Currency
-from models.transaction import Transaction, TransactionType
+from models.transaction import Transaction
 from models.user import User
 
 

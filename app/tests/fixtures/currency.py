@@ -16,7 +16,7 @@ CURRENCY_DETAILS_URL = CURRENCY_URL + '{currency_id}'
 def generate_currency(name: str, current_user: User):
     return Currency(
         name=name,
-        description=f'currency desc',
+        description='currency desc',
         quantity=500,
         user_id=current_user.id,
     )
