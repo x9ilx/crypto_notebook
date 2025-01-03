@@ -24,12 +24,12 @@ async def check_transaction_exist(
         session=session,
     )
 
+
 async def check_transaction_amount_is_valid_for_sale(
-    currency: Currency,
-    amount: float
+    currency: Currency, amount: float
 ) -> None:
-    if  currency.quantity - amount < 0:
+    if currency.quantity - amount < 0:
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST,
-            detail='Невозможно продать больше монет, чем есть в наличии.'
+            detail='Невозможно продать больше монет, чем есть в наличии.',
         )

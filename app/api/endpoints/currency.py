@@ -10,7 +10,7 @@ from crud.currency import currency_crud
 from models.transaction import TransactionType
 from models.user import User
 from schemas.currency import CurrencyCreate, CurrencyResponse, CurrencyUpdate
-from schemas.transaction import TransactionCreate, TransactionResponse
+
 
 router = APIRouter(prefix='/currency', tags=['Currency'])
 
@@ -20,7 +20,7 @@ router = APIRouter(prefix='/currency', tags=['Currency'])
     response_model=list[CurrencyResponse],
     summary='Позволяет получить все монеты пользователя.',
 )
-async def currency_get(
+async def currency_get_all(
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session),
 ) -> list[CurrencyResponse]:

@@ -103,10 +103,11 @@ async def generate_in_db_1_currencies_user2():
 
 @pytest.fixture
 async def get_currency_from_db():
-    async def make_get_currency_from_db(currency_id: int=1):
+    async def make_get_currency_from_db(currency_id: int = 1):
         async for session in override_db():
             result = await session.execute(
                 select(Currency).where(Currency.id == currency_id)
             )
             return result.scalars().first()
+
     return make_get_currency_from_db

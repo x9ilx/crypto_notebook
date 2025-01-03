@@ -32,6 +32,7 @@ CORRET_TRANSACTIONS_AND_ENPOINTS_LIST = [
     ),
 ]
 
+
 @pytest.fixture
 def transaction_expected_keys():
     return {
