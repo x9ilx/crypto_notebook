@@ -11,9 +11,9 @@ from api.transaction_validators import (
 from core.db import get_async_session
 from core.users import current_user
 from crud.transaction import transaction_crud
-from models.transaction import TransactionType
+from models.currency import Currency
+from models.transaction import Transaction, TransactionType
 from models.user import User
-from services.transaction import get_all_transactions_for_currency
 from schemas.transaction import (
     TransactionCreate,
     TransactionResponse,
@@ -31,7 +31,7 @@ router = APIRouter(
     summary='Позволяет получить все транзакции для валюты.',
     description='Фильтр по типу транзакции, дате',
 )
-async def currency_get_all(
+async def transaction_get_all(
     currency_id: int,
     transaction_type_filter: TransactionType | None = None,
     date_from: date | None = None,
@@ -39,12 +39,7 @@ async def currency_get_all(
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session),
 ) -> list[TransactionResponse]:
-    return await get_all_transactions_for_currency(
-        currency=await check_currency_exist(
-            currency_id=currency_id, user=user, session=session
-        ),
-        transaction_type=transaction_type_filter,
-    )
+    pass
 
 
 @router.get(
@@ -53,17 +48,9 @@ async def currency_get_all(
     summary='Позволяет получить информацию о транзакции.',
 )
 async def transaction_get(
-    currency_id: int,
-    transaction_id: int,
-    user: User = Depends(current_user),
-    session: AsyncSession = Depends(get_async_session),
+    transaction: Transaction = Depends(check_transaction_exist),
 ) -> TransactionResponse:
-    await check_currency_exist(
-        currency_id=currency_id, user=user, session=session
-    )
-    return await check_transaction_exist(
-        transaction_id=transaction_id, user=user, session=session
-    )
+    return transaction
 
 
 @router.post(
@@ -72,14 +59,11 @@ async def transaction_get(
     summary='Позволяет создать запись о покупке монеты.',
 )
 async def currency_add_purchase(
-    currency_id: int,
     purchase: TransactionCreate,
+    currency: Currency = Depends(check_currency_exist),
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session),
 ):
-    currency = await check_currency_exist(
-        currency_id=currency_id, user=user, session=session
-    )
     currency.quantity += purchase.amount
     return await transaction_crud.create_transaction(
         currency=currency,
@@ -96,14 +80,11 @@ async def currency_add_purchase(
     summary='Позволяет создать запись о продаже монеты.',
 )
 async def currency_add_sale(
-    currency_id: int,
     sale: TransactionCreate,
+    currency: Currency = Depends(check_currency_exist),
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session),
 ):
-    currency = await check_currency_exist(
-        currency_id=currency_id, user=user, session=session
-    )
     currency.quantity -= sale.amount
     await check_transaction_amount_is_valid_for_sale(
         currency=currency, amount=sale.amount
@@ -123,19 +104,12 @@ async def currency_add_sale(
     summary='Позволяет обновить запись о транзакции.',
 )
 async def transaction_update(
-    currency_id: int,
-    transaction_id: int,
     transaction_update: TransactionUpdate,
-    user: User = Depends(current_user),
+    transaction: Transaction = Depends(check_transaction_exist),
     session: AsyncSession = Depends(get_async_session),
 ):
-    await check_currency_exist(
-        currency_id=currency_id, user=user, session=session
-    )
     return await transaction_crud.update_transaction(
-        transaction=await check_transaction_exist(
-            transaction_id=transaction_id, user=user, session=session
-        ),
+        transaction=transaction,
         updated_transaction=transaction_update,
         session=session,
     )
@@ -147,17 +121,11 @@ async def transaction_update(
     summary='Позволяет удалить запись о транзакции.',
 )
 async def transaction_delete(
-    currency_id: int,
-    transaction_id: int,
+    transaction: Transaction = Depends(check_transaction_exist),
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session),
 ):
-    await check_currency_exist(
-        currency_id=currency_id, user=user, session=session
-    )
     return await transaction_crud.delete(
-        db_obj=await check_transaction_exist(
-            transaction_id=transaction_id, user=user, session=session
-        ),
+        db_obj=transaction,
         session=session,
     )

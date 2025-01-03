@@ -1,10 +1,13 @@
 from http import HTTPStatus
 from typing import Optional
 
-from fastapi import HTTPException
+from fastapi import Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.base_validators import check_object_exist
+from api.currency_validators import check_currency_exist
+from core.db import get_async_session
+from core.users import current_user
 from crud.transaction import transaction_crud
 from models.currency import Currency
 from models.transaction import Transaction
@@ -12,10 +15,16 @@ from models.user import User
 
 
 async def check_transaction_exist(
+    currency_id: int,
     transaction_id: int,
-    user: User,
-    session: AsyncSession,
+    user: User = Depends(current_user),
+    session: AsyncSession = Depends(get_async_session),
 ) -> Optional[Transaction]:
+    await check_currency_exist(
+        currency_id=currency_id,
+        user=user,
+        session=session
+    )
     return await check_object_exist(
         object_id=transaction_id,
         crud_class=transaction_crud,
