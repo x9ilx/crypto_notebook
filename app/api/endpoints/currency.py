@@ -21,10 +21,15 @@ router = APIRouter(prefix='/currency', tags=['Currency'])
     summary='Позволяет получить все монеты пользователя.',
 )
 async def currency_get_all(
+    name: str | None = None,
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session),
 ) -> list[CurrencyResponse]:
-    return await currency_crud.get_all(user=user, session=session)
+    return await currency_crud.get_all_with_name_filter(
+        name=name,
+        user=user,
+        session=session
+    )
 
 
 @router.get(
