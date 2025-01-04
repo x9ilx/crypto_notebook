@@ -5,7 +5,6 @@ from sqlalchemy import Date
 from sqlalchemy import Enum as saEnum
 from sqlalchemy import Float, ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy.sql import func
 
 from core.db import Base
 from models.mixins import UserMixin

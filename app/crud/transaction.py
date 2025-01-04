@@ -23,7 +23,7 @@ class CRUDTransaction(
         transaction_type: TransactionType,
         user: User,
         session: AsyncSession,
-    ):
+    ) -> Transaction:
         transaction: Transaction = Transaction(
             amount=new_transaction.amount,
             price=new_transaction.price,
@@ -51,7 +51,7 @@ class CRUDTransaction(
         transaction: Transaction,
         updated_transaction: TransactionUpdate,
         session: AsyncSession,
-    ):
+    ) -> Transaction:
         if (
             transaction.transaction_type == TransactionType.PURCHASE
             and updated_transaction.price

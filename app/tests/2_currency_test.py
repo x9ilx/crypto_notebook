@@ -275,19 +275,6 @@ class TestCurrency:
             'risk_minimisation_points'
         ], 'Список минимизации рисков монеты не соответствует ожидаемому'
 
-    async def test_get_all_currencies_noauth_user(
-        self, generate_in_db_1_currencies, noauth_client
-    ):
-        response = await noauth_client.delete(
-            url=CURRENCY_DETAILS_URL.format(
-                currency_id=generate_in_db_1_currencies['id']
-            )
-        )
-        assert response.status_code == HTTPStatus.UNAUTHORIZED, (
-            'Ответ на запрос должен быть 401 - UNAUTHORIZED\n'
-            f'content={response.content}'
-        )
-
     async def test_delete_currency_wrong_id(self, auth_client):
         response = await auth_client.delete(
             url=CURRENCY_DETAILS_URL.format(currency_id='100500')

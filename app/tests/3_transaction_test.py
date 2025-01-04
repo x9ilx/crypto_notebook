@@ -8,7 +8,7 @@ from tests.fixtures.transaction import (
     CORRET_TRANSACTIONS_AND_ENPOINTS_LIST,
     TRANSACTION_URL,
     TRANSACTION_PURCHASE_ENDPOINT,
-    TRANSACTION_SALE_ENDPOINT
+    TRANSACTION_SALE_ENDPOINT,
 )
 
 
@@ -23,12 +23,13 @@ class TestTransaction:
         generate_in_db_1_currencies,
         transaction_data,
         endpoint,
-        noauth_client
+        noauth_client,
     ):
         response = await noauth_client.post(
             url=TRANSACTION_URL.format(
                 currency_id=generate_in_db_1_currencies['id']
-            ) + endpoint,
+            )
+            + endpoint,
             json=transaction_data,
         )
         assert response.status_code == HTTPStatus.UNAUTHORIZED, (
@@ -99,14 +100,17 @@ class TestTransaction:
             assert result['risk_minimisation_point']['price'] == (
                 transaction_data['price'] * RISK_MINIMAISATION_MULTIPLER
             ), 'Цена точки минимизации рисков рассчитывается неверно.'
-            assert result['risk_minimisation_point']['transaction_id'] == (
-                result['id']
+            assert (
+                result['risk_minimisation_point']['transaction_id']
+                == (result['id'])
             ), 'Точки минимизации рисков привязана не к той транзакции.'
-            assert result['risk_minimisation_point']['transaction_id'] == (
-                result['id']
+            assert (
+                result['risk_minimisation_point']['transaction_id']
+                == (result['id'])
             ), 'Точки минимизации рисков привязана не к той транзакции.'
-            assert result['risk_minimisation_point']['currency_id'] == (
-                generate_in_db_1_currencies['id']
+            assert (
+                result['risk_minimisation_point']['currency_id']
+                == (generate_in_db_1_currencies['id'])
             ), 'Точки минимизации рисков привязана не к той монете.'
 
     @pytest.mark.parametrize(
@@ -193,7 +197,7 @@ class TestTransaction:
                 'created_at': '2010-10-10',
                 'transaction_type': TransactionType.PURCHASE.name,
             },
-                        {
+            {
                 'amount': 1,
                 'price': -1,
                 'created_at': '2010-10-10',
@@ -235,7 +239,7 @@ class TestTransaction:
                 'created_at': '2010-10-10',
                 'transaction_type': TransactionType.SALE.name,
             },
-                        {
+            {
                 'amount': 1,
                 'price': -1,
                 'created_at': '2010-10-10',
@@ -259,7 +263,7 @@ class TestTransaction:
             },
             {
                 'transaction_type': TransactionType.SALE.name,
-            }
+            },
         ],
         ids=[
             'purchase negative amount',
@@ -277,7 +281,7 @@ class TestTransaction:
             'sale zero price',
             'sale no price',
             'sale no created date',
-            'sale no amount, no price, no created date'
+            'sale no amount, no price, no created date',
         ],
     )
     async def test_create_transaction_bad_params(
