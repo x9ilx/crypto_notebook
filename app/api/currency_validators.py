@@ -25,3 +25,10 @@ async def check_currency_exist(
         user=user,
         session=session,
     )
+
+
+async def check_currency_name_is_unique(
+    name: str,
+    session
+)->bool:
+    pass
