@@ -1,6 +1,7 @@
 from typing import Optional
+from http import HTTPStatus
 
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.base_validators import check_object_exist
@@ -29,6 +30,16 @@ async def check_currency_exist(
 
 async def check_currency_name_is_unique(
     name: str,
-    session
-)->bool:
-    pass
+    user: User,
+    session: AsyncSession,
+)->None:
+    if await currency_crud._get_by_attribute(
+        attribute='name',
+        value=name,
+        user=user,
+        session=session
+    ):
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail=f'Монета с именем {name} уже существует у пользователя.'
+        )

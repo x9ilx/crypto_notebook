@@ -3,7 +3,10 @@ from http import HTTPStatus
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.currency_validators import check_currency_exist
+from api.currency_validators import (
+    check_currency_exist,
+    check_currency_name_is_unique
+)
 from core.db import get_async_session
 from core.users import current_user
 from crud.currency import currency_crud
@@ -54,6 +57,11 @@ async def currency_create(
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session),
 ) -> CurrencyResponse:
+    await check_currency_name_is_unique(
+        name=currency.name,
+        user=user,
+        session=session,
+    )
     return await currency_crud.create(currency, user, session)
 
 

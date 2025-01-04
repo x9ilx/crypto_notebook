@@ -32,7 +32,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
                 attr == value, self.model.user_id == user.id
             )
         )
-        return db_obj.scalars().all()
+        return db_obj.scalars().unique().all()
 
     async def _get_by_attributes(
         self,
@@ -49,7 +49,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         for option in query_options:
             query = query.options(option)
         result = await session.execute(query)
-        return result.scalars().all()
+        return result.scalars().unique().all()
 
     async def _get_first_by_attribute(
         self, attribute: str, value: str, user: User, session: AsyncSession
