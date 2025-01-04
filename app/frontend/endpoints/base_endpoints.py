@@ -1,6 +1,7 @@
 from typing import Optional
 
 from core.frontend import templates
+from core.users import current_user
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
 from models.user import User
@@ -27,7 +28,7 @@ async def login_page(request: Request, error: Optional[str] = None):
 )
 async def main_page(
     request: Request,
-    user: User = Depends()
+    # user: User = Depends(current_user)
 ):
-    context = {'request': request, 'user': user}
+    context = {'request': request}
     return templates.TemplateResponse('index.html', context)

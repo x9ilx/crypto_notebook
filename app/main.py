@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from api.routers import main_router
 from core.config import settings
 
-# from frontend.routers import frontend_router
+from frontend.routers import frontend_router
 from services.users import create_user
 
 
@@ -27,4 +27,4 @@ app = FastAPI(
 )
 app.mount('/static', StaticFiles(directory='static'), name='static')
 app.include_router(main_router)
-# app.include_router(frontend_router)
+app.include_router(frontend_router)
