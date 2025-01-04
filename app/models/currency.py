@@ -1,6 +1,6 @@
 from typing import Optional
 
-from sqlalchemy import Float, String
+from sqlalchemy import Float, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.db import Base
@@ -9,6 +9,9 @@ from models.transaction import TransactionType
 
 
 class Currency(Base, UserMixin):
+    __table_args__ = (
+        UniqueConstraint('name', 'user_id', name='name_user_id_unique'),
+    )
     lazy = 'selectin'
     __user_back_populates__ = 'currencies'
     name: Mapped[str] = mapped_column(String, nullable=False)
