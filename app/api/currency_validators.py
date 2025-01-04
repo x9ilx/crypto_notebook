@@ -41,5 +41,8 @@ async def check_currency_name_is_unique(
     ):
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail=f'Монета с именем {name} уже существует у пользователя.'
+            detail=(
+                f'Монета с именем {name} уже существует '
+                f'у текущего пользователя.'
+            )
         )
