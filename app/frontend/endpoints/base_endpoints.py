@@ -4,7 +4,7 @@ from core.frontend import templates
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import FileResponse, HTMLResponse
 from models.user import User
-from frontend.service import get_user_on_jwt_from_cookies_or_redirect
+from services.frontend import get_user_on_jwt_from_cookies_or_redirect
 
 
 router = APIRouter(tags=['frontend_base'])
@@ -35,5 +35,5 @@ async def main_page(
     request: Request,
     user: User = Depends(get_user_on_jwt_from_cookies_or_redirect)
 ):
-    context = {'request': request}
+    context = {'request': request, 'user': user}
     return templates.TemplateResponse('index.html', context)
