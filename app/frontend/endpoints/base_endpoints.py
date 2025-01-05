@@ -1,13 +1,18 @@
 from typing import Optional
 
 from core.frontend import templates
-from core.users import current_user
 from fastapi import APIRouter, Depends, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from models.user import User
+from frontend.service import get_user_on_jwt_from_cookies_or_redirect
 
 
 router = APIRouter(tags=['frontend_base'])
+
+
+@router.get('/favicon.ico', include_in_schema=False)
+async def favicon():
+    return FileResponse('./static/images/favicon.ico')
 
 
 @router.get(
@@ -28,7 +33,7 @@ async def login_page(request: Request, error: Optional[str] = None):
 )
 async def main_page(
     request: Request,
-    # user: User = Depends(current_user)
+    user: User = Depends(get_user_on_jwt_from_cookies_or_redirect)
 ):
     context = {'request': request}
     return templates.TemplateResponse('index.html', context)

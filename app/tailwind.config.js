@@ -152,18 +152,15 @@ module.exports = {
           },
         },
         contrast: {
-          DEFAULT: '#fa0000',
-          50: '#fff0f0',
-          100: '#ffdddd',
-          200: '#ffc0c0',
-          300: '#ff9494',
-          400: '#ff5757',
-          500: '#ff2323',
-          600: '#fa0000',
-          700: '#d70000',
-          800: '#b10303',
-          900: '#920a0a',
-          950: '#500000',
+          light: {
+            DEFAULT: '#2b6ad6'
+          },
+          dark: {
+            DEFAULT: '#193e7d'
+          }
+        },
+        error: {
+          DEFAULT: '#a60800',
         }
       },
     },
