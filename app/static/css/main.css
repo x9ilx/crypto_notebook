@@ -1085,6 +1085,16 @@ select {
   background-color: rgb(243 244 246 / var(--tw-bg-opacity, 1));
 }
 
+.hover\:text-contrast-light:hover {
+  --tw-text-opacity: 1;
+  color: rgb(43 106 214 / var(--tw-text-opacity, 1));
+}
+
+.hover\:text-error:hover {
+  --tw-text-opacity: 1;
+  color: rgb(166 8 0 / var(--tw-text-opacity, 1));
+}
+
 .hover\:underline:hover {
   text-decoration-line: underline;
 }
@@ -1197,6 +1207,11 @@ select {
 .dark\:hover\:bg-gray-700:hover:is(.dark *) {
   --tw-bg-opacity: 1;
   background-color: rgb(55 65 81 / var(--tw-bg-opacity, 1));
+}
+
+.dark\:hover\:text-contrast-dark:hover:is(.dark *) {
+  --tw-text-opacity: 1;
+  color: rgb(25 62 125 / var(--tw-text-opacity, 1));
 }
 
 .dark\:focus\:ring-gray-700:focus:is(.dark *) {

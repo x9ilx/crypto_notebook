@@ -1,8 +1,9 @@
+from http import HTTPStatus
 from typing import Optional
 
 from core.frontend import templates
 from fastapi import APIRouter, Depends, Request
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 from models.user import User
 from services.frontend import get_user_on_jwt_from_cookies_or_redirect
 
@@ -24,6 +25,22 @@ async def favicon():
 async def login_page(request: Request, error: Optional[str] = None):
     context = {'request': request, 'error': error}
     return templates.TemplateResponse('login.html', context)
+
+
+@router.post(
+    '/logout_user',
+    response_class=HTMLResponse,
+    summary='Выход пользователя из системы'
+)
+async def logout_user(
+    request: Request,
+):
+    response = RedirectResponse(
+        request.url_for('login_page'),
+        status_code=HTTPStatus.SEE_OTHER,
+    )
+    response.delete_cookie(key='jwt', httponly=True, secure=True)
+    return response
 
 
 @router.get(
