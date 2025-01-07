@@ -4,6 +4,10 @@ from typing import Optional
 from core.frontend import templates
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from api.endpoints.currency import currency_get_all
+from core.db import get_async_session
 from models.user import User
 from services.frontend import get_user_on_jwt_from_cookies_or_redirect
 
@@ -50,7 +54,14 @@ async def logout_user(
 )
 async def main_page(
     request: Request,
-    user: User = Depends(get_user_on_jwt_from_cookies_or_redirect)
+    name: str | None = None,
+    user: User = Depends(get_user_on_jwt_from_cookies_or_redirect),
+    session: AsyncSession = Depends(get_async_session)
 ):
-    context = {'request': request, 'user': user}
+    currencies = await currency_get_all(
+        name=name,
+        user=user,
+        session=session
+    )
+    context = {'request': request, 'user': user, 'currencies': currencies}
     return templates.TemplateResponse('index.html', context)

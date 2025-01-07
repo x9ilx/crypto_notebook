@@ -7,11 +7,7 @@ from schemas.service import RiskMinimisationResponse, ServiceResponse
 from schemas.transaction import TransactionResponse
 
 
-class CurrencyBase(BaseModel):
-    name: str = Field(..., min_length=1)
-    description: Optional[str] = None
-    quantity: float = Field(default=0.0, ge=0.0)
-
+class NameValidator:
     @field_validator('name')
     @classmethod
     def correct_name(cls, value: str) -> str:
@@ -22,11 +18,17 @@ class CurrencyBase(BaseModel):
         return value.upper()
 
 
-class CurrencyCreate(CurrencyBase):
+class CurrencyBase(BaseModel, NameValidator):
+    name: str = Field(..., min_length=1)
+    description: Optional[str] = None
+    quantity: float = Field(default=0.0, ge=0.0)
+
+
+class CurrencyCreate(CurrencyBase, NameValidator):
     pass
 
 
-class CurrencyUpdate(BaseModel):
+class CurrencyUpdate(BaseModel, NameValidator):
     name: Optional[str] = None
     description: Optional[str] = None
 

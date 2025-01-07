@@ -6,9 +6,9 @@ module.exports = {
       colors: {
         background: {
           light: {
-            DEFAULT: '#f5f5f5',
+            DEFAULT: '#ffffff',
             secondary: {
-              DEFAULT: '#f0f0f0',
+              DEFAULT: '#f8f8f8',
               50: '#f8f8f8',
               100: '#f0f0f0',
               200: '#dcdcdc',
@@ -63,7 +63,7 @@ module.exports = {
           },
           content: {
             light: {
-              DEFAULT: '#6e6e6e',
+              DEFAULT: '#ffffff',
               50: '#f6f6f6',
               100: '#e7e7e7',
               200: '#d1d1d1',
