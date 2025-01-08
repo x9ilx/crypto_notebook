@@ -22,6 +22,8 @@ class CurrencyBase(BaseModel, NameValidator):
     name: str = Field(..., min_length=1)
     description: Optional[str] = None
     quantity: float = Field(default=0.0, ge=0.0)
+    current_price: float = Field(default=0.0, ge=0.0)
+    image_path: Optional[str] = None
 
 
 class CurrencyCreate(CurrencyBase, NameValidator):
@@ -31,6 +33,7 @@ class CurrencyCreate(CurrencyBase, NameValidator):
 class CurrencyUpdate(BaseModel, NameValidator):
     name: Optional[str] = None
     description: Optional[str] = None
+    image_path: Optional[str] = None
 
 
 class CurrencyResponse(CurrencyBase):

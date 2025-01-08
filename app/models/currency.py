@@ -18,6 +18,16 @@ class Currency(Base, UserMixin):
     description: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     quantity: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
     profit: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
+    image_path: Mapped[str] = mapped_column(
+        String,
+        nullable=True,
+        default=None
+    )
+    current_price: Mapped[float] = mapped_column(
+        Float,
+        nullable=False,
+        default=0.0
+    )
     sales: Mapped[list['Transaction']] = relationship(
         'Transaction',
         primaryjoin=(
