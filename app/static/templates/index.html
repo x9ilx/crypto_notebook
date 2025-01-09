@@ -1,4 +1,21 @@
 {% extends 'base/main_page.html' %}
-{% block main_content %}
-{% include 'elements/currencies/currencies_list.html' %}
+
+{% block script %}
+<script>
+  function show_currency_details(id) {
+    var element = document.getElementById(id);
+    var label = document.getElementById(id + "-label");
+    if (element.style.display == "none") {
+        element.style.display = "table-row";
+        label.innerHTML = label.innerHTML.replace("↓","↑");
+    } else {
+        element.style.display = "none";
+        label.innerHTML = label.innerHTML.replace("↑","↓");
+    }
+  }
+</script>
+{% endblock script %}
+
+{% block main_content %} 
+    {% include 'elements/currencies/currencies_list.html' %} 
 {% endblock main_content %}

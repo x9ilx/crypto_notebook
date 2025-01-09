@@ -95,7 +95,7 @@ module.exports = {
         },
         text: {
           light: {
-            DEFAULT: '#1Ff2123',
+            DEFAULT: '#1F2123',
             secondary: {
               DEFAULT: '#242729',
               50: '#f5f6f6',

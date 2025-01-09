@@ -1,7 +1,8 @@
 <div
   class="relative p-5 overflow-x-auto shadow-md sm:rounded-lg text-text-light dark:text-text-dark"
 >
-  <div class="space-y-4 md:space-y-0 pb-4 ">
+<div id="accordion-nested-parent" data-accordion="collapse">
+  <div class="space-y-4 md:space-y-0 pb-4">
     <label for="table-search" class="sr-only">Поиск</label>
     <div class="relative">
       <div
@@ -32,72 +33,21 @@
     </div>
   </div>
   <table class="w-full text-sm text-left rtl:text-righ">
-    <thead class="text-xs uppercase border-b border-background-light-secondary-200 text-text-light-secondary  bg-background-light-secondary dark:text-text-dark-secondary dark:bg-background-dark-secondary dark:border-background-dark-secondary-900">
-        <tr>
-            <th scope="col" class="px-6 py-3">
-                Название валюты
-            </th>
-            <th scope="col" class="px-6 py-3">
-                Количество
-            </th>
-            <th scope="col" class="px-6 py-3">
-                Текущая стоимость
-            </th>
-            <th scope="col" class="px-6 py-3">
-                Эквивалент в $
-            </th>
-            <th scope="col" class="px-6 py-3">
-                Прирост
-            </th>
-            <th scope="col" class="px-6 py-3">
-                Подробности
-            </th>
-        </tr>
+    <thead
+      class="text-xs uppercase border-b border-background-light-secondary-200 text-text-light-secondary bg-background-light-secondary dark:text-text-dark-secondary dark:bg-background-dark-secondary dark:border-background-dark-secondary-900"
+    >
+      <tr>
+        <th scope="col" class="py-3 text-center">Название валюты</th>
+        <th scope="col" class="py-3 text-center">Количество</th>
+        <th scope="col" class="py-3 text-center">Текущая стоимость</th>
+        <th scope="col" class="py-3 text-center">Эквивалент в $</th>
+        <th scope="col" class="py-3 text-center">Прирост</th>
+        <th scope="col" class="px-6 py-3 text-center">Подробности</th>
+      </tr>
     </thead>
     <tbody>
-      {% for currency in currencies %}
-      <tr
-        class="border-b border-background-light-secondary-200 bg-background-light text-text-light hover:bg-background-light-secondary dark:bg-background-dark dark:text-text-dark dark:hover:bg-background-dark-secondary dark:border-background-dark-secondary-900"
-      >
-        <th
-          scope="row"
-          class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
-          style="white-space: wrap"
-        >
-          <a href="#"
-            ><img
-              class="w-10 h-10 rounded-full"
-              style="object-fit: scale-down;"
-              src="static/images/3378138.png"
-              alt=""
-          /></a>
-          <div class="ps-3">
-            <div class="text-base font-semibold">
-              <a href="#" class="hover:underline">{{ currency.name }}</a>
-            </div>
-            <div
-              class="font-normal text-gray-500"
-              title="{{ currency.description }}"
-            >
-              {{ currency.description | truncate(100) }}
-            </div>
-          </div>
-        </th>
-        <td class="px-6 py-4">{{ currency.quantity }} {{ currency.name }}</td>
-        <td class="px-6 py-4 ">
-            $10.000000004
-        </td>
-        <td class="px-6 py-4">
-            ${{ currency.quantity * 10 }}
-        </td>
-        <td class="px-6 py-4">
-             63.2%
-        </td>
-        <td class="px-6 py-4">
-          Подробнее
-        </td>
-      </tr>
-      {% endfor %}
+      {% include 'elements/currencies/currency_element.html' %}
     </tbody>
   </table>
+</div>
 </div>
