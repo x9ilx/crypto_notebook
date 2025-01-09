@@ -25,7 +25,7 @@ router = APIRouter(prefix='/currency', tags=['Currency'])
 )
 async def currency_get_all(
 	name: str | None = None,
-	order_field: str | None = None,
+	order_field: str | None = 'name',
 	order_desc: bool = False,
 	user: User = Depends(current_user),
 	session: AsyncSession = Depends(get_async_session),

@@ -56,6 +56,7 @@ class Currency(Base, UserMixin):
 		overlaps='service_purchases_points',
 		lazy='joined',
 		cascade='all, delete-orphan',
+        order_by='Service.price',
 	)
 	service_purchases_points: Mapped[list['Service']] = relationship(
 		'Service',
@@ -66,6 +67,7 @@ class Currency(Base, UserMixin):
 		overlaps='service_sales_points',
 		lazy='joined',
 		cascade='all, delete-orphan',
+        order_by='desc(Service.price)',
 	)
 
 	def __repr__(self):
