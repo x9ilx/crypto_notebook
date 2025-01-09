@@ -1,6 +1,6 @@
 from sqlalchemy import Enum as saEnum
 from sqlalchemy import Float, ForeignKey, Integer
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.db import Base
 from models.mixins import UserMixin
@@ -38,6 +38,7 @@ class Service(Base, UserMixin):
     currency_id: Mapped[int] = mapped_column(
         Integer, ForeignKey('currency.id'), nullable=False
     )
+    currency = relationship('Currency', viewonly=True)
 
     def __repr__(self):
         return (

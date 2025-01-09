@@ -1,0 +1,49 @@
+<div class="relative overflow-x-auto">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    {% if investment_name == '$' %}Инвестиции ($) {% else %}Изъятие ({{ investment_name }}){% endif %} 
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Предполагаемая стоимость монеты
+                </th>
+                <th scope="col" class="px-6 py-3">
+                     {% if investment_name == '$' %}Количество монет{% else %}Прибыль{% endif %} 
+                </th>
+                <th scope="col" class="px-6 py-3 text-center">
+                    Редактировать план
+                </th>
+                <th scope="col" class="px-6 py-3 text-center">
+                    Удалить план
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for plan in plans_list  %}
+                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-background-light-secondary dark:hover:bg-background-dark-secondary">
+                    <td class="px-6">
+                       {% if plan.service_type.name == 'PURCHASE' %}${{ plan.investments }} {% else %}{{ plan.investments }} {{ investment_name }}{% endif %} 
+                    </td>
+                    <td class="px-6">
+                        ${{ plan.price }}
+                    </td>
+                    <td class="px-6">
+                        {% if plan.service_type.name == 'PURCHASE' %}
+                            {{ '%0.2f' | format(plan.investments / plan.price | float) }} {{ plan.currency.name }}
+                        {% else %}
+                            ${{ '%0.2f' | format(plan.investments * plan.price | float) }} 
+                        {% endif %}
+                    </td>
+                    <td class="px-6 text-center">
+                        <a href="" class="cursor-pointer hover:underline">Изменить</a>
+                    </td>
+                    <td class="px-6 text-center text-error">
+                        <a href="" class="cursor-pointer hover:underline">Удалить</a>
+                    </td>
+                </tr>
+                <tr></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

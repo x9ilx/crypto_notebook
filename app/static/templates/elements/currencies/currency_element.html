@@ -39,7 +39,7 @@
     >
       <span
         id="collapse-{{ loop.index }}-label"
-        class="underline cursor-pointer"
+        class="cursor-pointer"
         >Подробнее ↓</span
       >
     </button>
@@ -52,15 +52,7 @@
   style="display: none"
 >
   <td class="px-4 py-2" colspan="6">
-    <div
-      class="p-5 border border-gray-200 dark:border-gray-700 dark:bg-gray-900"
-    >
-      <p class="mb-2 text-gray-500 dark:text-gray-400">
-        Flowbite is an open-source library of interactive components built on
-        top of Tailwind CSS including buttons, dropdowns, modals, navbars, and
-        more.
-      </p>
-    </div>
+    {% include 'elements/currencies/details/currency_element_details.html' %}
   </td>
 </tr>
 {% endfor %}
