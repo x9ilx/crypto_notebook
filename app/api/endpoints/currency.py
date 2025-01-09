@@ -25,13 +25,17 @@ router = APIRouter(prefix='/currency', tags=['Currency'])
 )
 async def currency_get_all(
     name: str | None = None,
+    order_field: str | None = None,
+    order_desc: bool = False,
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session),
 ) -> list[CurrencyResponse]:
     return await currency_crud.get_all_with_name_filter(
         name=name,
         user=user,
-        session=session
+        session=session,
+        order_field=order_field,
+        order_desc=order_desc,
     )
 
 

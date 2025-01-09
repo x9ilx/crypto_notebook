@@ -16,15 +16,26 @@ class CRUDCurrency(CRUDBase[Currency, CurrencyCreate, CurrencyUpdate]):
         user: User,
         session: AsyncSession,
         name: str| None = None,
+        order_field: str | None = None,
+        order_desc: bool = False,
     ) -> list[Currency]:
         if not name:
-            return await self.get_all(user=user, session=session)
-        result = await session.execute(
-            select(Currency)
-            .where(
-                Currency.name.startswith(name.upper()),
-                Currency.user_id == user.id,
+            return await self.get_all(
+                user=user,
+                session=session,
+                order_field=order_field,
+                order_desc=order_desc,
             )
+        result = await self._add_sorting_field(
+            query=await session.execute(
+                select(Currency)
+                .where(
+                    Currency.name.startswith(name.upper()),
+                    Currency.user_id == user.id,
+                )
+            ),
+            field_name=order_field,
+            field_desc_sort=order_desc,
         )
         return result.scalars().unique().all()
 

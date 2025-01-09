@@ -23,13 +23,34 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         await session.refresh(obj)
         return obj
 
+    async def _add_sorting_field(
+        self,
+        query,
+        field_name: str | None = None,
+        field_desc_sort: bool = False,
+    ):
+        if field_name:
+            field = getattr(self.model, field_name, None)
+            if field:
+                order_desc = field
+                if field_desc_sort:
+                    order_desc = getattr(field, 'desc')()
+                return query.order_by(order_desc)
+        return query
+
     async def _get_by_attribute(
-        self, attribute: str, value: str, user: User, session: AsyncSession
+        self, attribute: str, value: str, user: User, session: AsyncSession,
+        order_field: str | None = None,
+        order_desc: bool = False 
     ) -> list[ModelType]:
         attr = getattr(self.model, attribute)
-        db_obj = await session.execute(
-            select(self.model).where(
-                attr == value, self.model.user_id == user.id
+        db_obj = await self._add_sorting_field(
+            await session.execute(
+                query=select(self.model).where(
+                    attr == value, self.model.user_id == user.id
+                ),
+                    field_name=order_field,
+                    field_desc_sort=order_desc
             )
         )
         return db_obj.scalars().unique().all()
@@ -40,6 +61,8 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         query_options: list[Any],
         user: User,
         session: AsyncSession,
+        order_field: str | None = None,
+        order_desc: bool = False 
     ) -> list[ModelType]:
         query = select(self.model)
         query = query.where(self.model.user_id == user.id)
@@ -48,35 +71,64 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             query = query.where(attr == value)
         for option in query_options:
             query = query.options(option)
-        result = await session.execute(query)
+        result = await session.execute(
+            await self._add_sorting_field(
+                query=query,
+                    field_name=order_field,
+                    field_desc_sort=order_desc
+            )
+        )
         return result.scalars().unique().all()
 
     async def _get_first_by_attribute(
-        self, attribute: str, value: str, user: User, session: AsyncSession
+        self, attribute: str, value: str, user: User, session: AsyncSession,
+        order_field: str | None = None,
+        order_desc: bool = False 
     ) -> list[ModelType]:
         attr = getattr(self.model, attribute)
-        db_obj = await session.execute(
-            select(self.model).where(
-                attr == value, self.model.user_id == user.id
+        db_obj = await self._add_sorting_field(
+            await session.execute(
+                query=select(self.model).where(
+                    attr == value, self.model.user_id == user.id
+                ),
+                    field_name=order_field,
+                    field_desc_sort=order_desc
             )
         )
         return db_obj.scalars().first()
 
     async def get(
-        self, obj_id: int, user: User, session: AsyncSession
+        self, obj_id: int, user: User, session: AsyncSession,
+        order_field: str | None = None,
+        order_desc: bool = False 
     ) -> Optional[ModelType]:
         db_obj = await session.execute(
-            select(self.model).where(
-                self.model.id == obj_id, self.model.user_id == user.id
+            await self._add_sorting_field(
+                query=select(self.model).where(
+                    self.model.id == obj_id, self.model.user_id == user.id
+                ),
+                    field_name=order_field,
+                    field_desc_sort=order_desc
+                
             )
         )
         return db_obj.scalars().first()
 
     async def get_all(
-        self, user: User, session: AsyncSession
+        self,
+        user: User,
+        session: AsyncSession,
+        order_field: str | None = None,
+        order_desc: bool = False 
     ) -> list[ModelType]:
         db_obj = await session.execute(
-            select(self.model).where(self.model.user_id == user.id)
+                await self._add_sorting_field(
+                    query=select(self.model).where(
+                        self.model.user_id == user.id
+                    ),
+                    field_name=order_field,
+                    field_desc_sort=order_desc
+                )
         )
         return db_obj.scalars().unique().all()
 
