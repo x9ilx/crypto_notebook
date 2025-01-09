@@ -13,20 +13,18 @@ from models.user import User
 
 
 async def check_service_exist(
-    currency_id: int,
-    service_id: int,
-    user: User = Depends(current_user),
-    session: AsyncSession = Depends(get_async_session),
+	currency_id: int,
+	service_id: int,
+	user: User = Depends(current_user),
+	session: AsyncSession = Depends(get_async_session),
 ) -> Optional[Service]:
-    await check_currency_exist(
-        currency_id=currency_id,
-        user=user,
-        session=session
-    )
-    return await check_object_exist(
-        object_id=service_id,
-        crud_class=service_crud,
-        error_text=f'Плана с id {service_id} не существует.',
-        user=user,
-        session=session,
-    )
+	await check_currency_exist(
+		currency_id=currency_id, user=user, session=session
+	)
+	return await check_object_exist(
+		object_id=service_id,
+		crud_class=service_crud,
+		error_text=f'Плана с id {service_id} не существует.',
+		user=user,
+		session=session,
+	)

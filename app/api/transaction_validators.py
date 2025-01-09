@@ -15,30 +15,28 @@ from models.user import User
 
 
 async def check_transaction_exist(
-    currency_id: int,
-    transaction_id: int,
-    user: User = Depends(current_user),
-    session: AsyncSession = Depends(get_async_session),
+	currency_id: int,
+	transaction_id: int,
+	user: User = Depends(current_user),
+	session: AsyncSession = Depends(get_async_session),
 ) -> Optional[Transaction]:
-    await check_currency_exist(
-        currency_id=currency_id,
-        user=user,
-        session=session
-    )
-    return await check_object_exist(
-        object_id=transaction_id,
-        crud_class=transaction_crud,
-        error_text=f'Транзакции с id {transaction_id} не существует.',
-        user=user,
-        session=session,
-    )
+	await check_currency_exist(
+		currency_id=currency_id, user=user, session=session
+	)
+	return await check_object_exist(
+		object_id=transaction_id,
+		crud_class=transaction_crud,
+		error_text=f'Транзакции с id {transaction_id} не существует.',
+		user=user,
+		session=session,
+	)
 
 
 async def check_transaction_amount_is_valid_for_sale(
-    currency: Currency, amount: float
+	currency: Currency, amount: float
 ) -> None:
-    if currency.quantity - amount < 0:
-        raise HTTPException(
-            status_code=HTTPStatus.BAD_REQUEST,
-            detail='Невозможно продать больше монет, чем есть в наличии.',
-        )
+	if currency.quantity - amount < 0:
+		raise HTTPException(
+			status_code=HTTPStatus.BAD_REQUEST,
+			detail='Невозможно продать больше монет, чем есть в наличии.',
+		)

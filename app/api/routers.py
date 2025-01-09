@@ -1,10 +1,10 @@
 from fastapi import APIRouter
 
 from .endpoints import (
-    currency_router,
-    service_router,
-    transaction_router,
-    user_router,
+	currency_router,
+	service_router,
+	transaction_router,
+	user_router,
 )
 
 main_router = APIRouter()

@@ -41,7 +41,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     async def _get_by_attribute(
         self, attribute: str, value: str, user: User, session: AsyncSession,
         order_field: str | None = None,
-        order_desc: bool = False 
+        order_desc: bool = False
     ) -> list[ModelType]:
         attr = getattr(self.model, attribute)
         db_obj = await self._add_sorting_field(
@@ -49,8 +49,8 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
                 query=select(self.model).where(
                     attr == value, self.model.user_id == user.id
                 ),
-                    field_name=order_field,
-                    field_desc_sort=order_desc
+                field_name=order_field,
+                field_desc_sort=order_desc
             )
         )
         return db_obj.scalars().unique().all()
@@ -62,7 +62,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         user: User,
         session: AsyncSession,
         order_field: str | None = None,
-        order_desc: bool = False 
+        order_desc: bool = False
     ) -> list[ModelType]:
         query = select(self.model)
         query = query.where(self.model.user_id == user.id)
@@ -74,8 +74,8 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         result = await session.execute(
             await self._add_sorting_field(
                 query=query,
-                    field_name=order_field,
-                    field_desc_sort=order_desc
+                field_name=order_field,
+                field_desc_sort=order_desc
             )
         )
         return result.scalars().unique().all()
@@ -83,7 +83,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     async def _get_first_by_attribute(
         self, attribute: str, value: str, user: User, session: AsyncSession,
         order_field: str | None = None,
-        order_desc: bool = False 
+        order_desc: bool = False
     ) -> list[ModelType]:
         attr = getattr(self.model, attribute)
         db_obj = await self._add_sorting_field(
@@ -91,8 +91,8 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
                 query=select(self.model).where(
                     attr == value, self.model.user_id == user.id
                 ),
-                    field_name=order_field,
-                    field_desc_sort=order_desc
+                field_name=order_field,
+                field_desc_sort=order_desc
             )
         )
         return db_obj.scalars().first()
@@ -100,16 +100,16 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     async def get(
         self, obj_id: int, user: User, session: AsyncSession,
         order_field: str | None = None,
-        order_desc: bool = False 
+        order_desc: bool = False
     ) -> Optional[ModelType]:
         db_obj = await session.execute(
             await self._add_sorting_field(
                 query=select(self.model).where(
                     self.model.id == obj_id, self.model.user_id == user.id
                 ),
-                    field_name=order_field,
-                    field_desc_sort=order_desc
-                
+                field_name=order_field,
+                field_desc_sort=order_desc
+
             )
         )
         return db_obj.scalars().first()
@@ -119,16 +119,16 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         user: User,
         session: AsyncSession,
         order_field: str | None = None,
-        order_desc: bool = False 
+        order_desc: bool = False
     ) -> list[ModelType]:
         db_obj = await session.execute(
-                await self._add_sorting_field(
-                    query=select(self.model).where(
-                        self.model.user_id == user.id
-                    ),
-                    field_name=order_field,
-                    field_desc_sort=order_desc
-                )
+            await self._add_sorting_field(
+                query=select(self.model).where(
+                    self.model.user_id == user.id
+                ),
+                field_name=order_field,
+                field_desc_sort=order_desc
+            )
         )
         return db_obj.scalars().unique().all()
 

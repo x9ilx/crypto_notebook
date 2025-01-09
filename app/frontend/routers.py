@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from frontend.endpoints import (
-    frontend_base,
+	frontend_base,
 )
 
 frontend_router = APIRouter()

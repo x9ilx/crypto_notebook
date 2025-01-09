@@ -13,77 +13,77 @@ from models.user import User
 from schemas.service import ServiceCreate, ServiceResponse, ServiceUpdate
 
 router = APIRouter(
-    prefix='/currency/{currency_id}/services', tags=['Services']
+	prefix='/currency/{currency_id}/services', tags=['Services']
 )
 
 
 @router.post(
-    '/purchase_planning',
-    response_model=ServiceResponse,
-    summary='Позволяет создать план покупки монеты.',
+	'/purchase_planning',
+	response_model=ServiceResponse,
+	summary='Позволяет создать план покупки монеты.',
 )
 async def currency_add_purchase_plan(
-    purchase_plan: ServiceCreate,
-    currency: Currency = Depends(check_currency_exist),
-    user: User = Depends(current_user),
-    session: AsyncSession = Depends(get_async_session),
+	purchase_plan: ServiceCreate,
+	currency: Currency = Depends(check_currency_exist),
+	user: User = Depends(current_user),
+	session: AsyncSession = Depends(get_async_session),
 ):
-    return await service_crud.create_service(
-        currency=currency,
-        new_service=purchase_plan,
-        transaction_type=TransactionType.PURCHASE,
-        user=user,
-        session=session,
-    )
+	return await service_crud.create_service(
+		currency=currency,
+		new_service=purchase_plan,
+		transaction_type=TransactionType.PURCHASE,
+		user=user,
+		session=session,
+	)
 
 
 @router.post(
-    '/sale_planning',
-    response_model=ServiceResponse,
-    summary='Позволяет создать план продажи монеты.',
+	'/sale_planning',
+	response_model=ServiceResponse,
+	summary='Позволяет создать план продажи монеты.',
 )
 async def currency_add_sale_plan(
-    sale_plan: ServiceCreate,
-    currency: Currency = Depends(check_currency_exist),
-    user: User = Depends(current_user),
-    session: AsyncSession = Depends(get_async_session),
+	sale_plan: ServiceCreate,
+	currency: Currency = Depends(check_currency_exist),
+	user: User = Depends(current_user),
+	session: AsyncSession = Depends(get_async_session),
 ):
-    return await service_crud.create_service(
-        currency=currency,
-        new_service=sale_plan,
-        transaction_type=TransactionType.SALE,
-        user=user,
-        session=session,
-    )
+	return await service_crud.create_service(
+		currency=currency,
+		new_service=sale_plan,
+		transaction_type=TransactionType.SALE,
+		user=user,
+		session=session,
+	)
 
 
 @router.patch(
-    '/{service_id}',
-    response_model=ServiceResponse,
-    summary='Позволяет обновить запись о запланированном действии.',
+	'/{service_id}',
+	response_model=ServiceResponse,
+	summary='Позволяет обновить запись о запланированном действии.',
 )
 async def transaction_update(
-    service_update: ServiceUpdate,
-    service: Service = Depends(check_service_exist),
-    session: AsyncSession = Depends(get_async_session),
+	service_update: ServiceUpdate,
+	service: Service = Depends(check_service_exist),
+	session: AsyncSession = Depends(get_async_session),
 ):
-    return await service_crud.update(
-        db_obj=service,
-        obj_in=service_update,
-        session=session,
-    )
+	return await service_crud.update(
+		db_obj=service,
+		obj_in=service_update,
+		session=session,
+	)
 
 
 @router.delete(
-    '/{service_id}',
-    response_model=ServiceResponse,
-    summary='Позволяет удалить запись о запланированном действии.',
+	'/{service_id}',
+	response_model=ServiceResponse,
+	summary='Позволяет удалить запись о запланированном действии.',
 )
 async def transaction_delete(
-    service: Service = Depends(check_service_exist),
-    session: AsyncSession = Depends(get_async_session),
+	service: Service = Depends(check_service_exist),
+	session: AsyncSession = Depends(get_async_session),
 ):
-    return await service_crud.delete(
-        db_obj=service,
-        session=session,
-    )
+	return await service_crud.delete(
+		db_obj=service,
+		session=session,
+	)
