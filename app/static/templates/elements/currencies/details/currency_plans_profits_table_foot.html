@@ -1,0 +1,19 @@
+<tr>
+  <td id="total_investments" class="font-bold px-6">
+    Итого:{% if service_type == 'PURCHASE' %}
+      ${{ '%0.2f'|format(profit.total_investments|float) }}
+    {% else %}
+      {{ '%0.2f'|format(profit.total_investments|float) }} {{ currency_name }}
+    {% endif %}
+  </td>
+  <td></td>
+  <td id="total_profit" class="font-bold px-6">
+    Итого:{% if service_type == 'PURCHASE' %}
+      {{ '%0.2f'|format(profit.total_profit|float) }} {{ currency_name }}
+    {% else %}
+      ${{ '%0.2f'|format(profit.total_profit|float) }}
+    {% endif %}
+  </td>
+  <td></td>
+  <td></td>
+</tr>

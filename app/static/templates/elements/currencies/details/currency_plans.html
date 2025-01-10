@@ -42,15 +42,19 @@
                         <a href="" class="cursor-pointer hover:underline">Удалить</a>
                     </td>
                 </tr>
+                {% if loop.last %}
+                    {% if plan.service_type.name == 'PURCHASE' %}
+                        {% with profit=currency.get_purchases_profit, service_type=plan.service_type.name, currency_name=plan.currency.name %}
+                            {% include 'elements/currencies/details/currency_plans_profits_table_foot.html' %}
+                        {% endwith %}
+                    {% else %}
+                        {% with profit=currency.get_sales_profit, service_type=plan.service_type.name, currency_name=plan.currency.name %}
+                            {% include 'elements/currencies/details/currency_plans_profits_table_foot.html' %}
+                        {% endwith %}
+                    {% endif %}
+                {% endif %}
             {% endfor %}
         </tbody>
-        <tfoot>
-            <tr>
-              <td id="total_investments" class="text-right">Итого :</th>
-              <td>${{ currency.get_purchases_profit.total_investments }}</td>
-              <td id="total_profit" class="text-right">Итого :</th>
-              <td>$15625.56</td>
-            </tr>
-        </tfoot>
+        
     </table>
 </div>
