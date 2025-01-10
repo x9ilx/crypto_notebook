@@ -25,6 +25,7 @@ async def favicon():
 	response_class=HTMLResponse,
 	name='login_page',
 	summary='Страница входа в админку',
+ 	include_in_schema=False,
 )
 async def login_page(request: Request, error: Optional[str] = None):
 	context = {'request': request, 'error': error}
@@ -35,6 +36,7 @@ async def login_page(request: Request, error: Optional[str] = None):
 	'/logout_user',
 	response_class=HTMLResponse,
 	summary='Выход пользователя из системы',
+ 	include_in_schema=False,
 )
 async def logout_user(
 	request: Request,
@@ -51,6 +53,7 @@ async def logout_user(
 	'/',
 	response_class=HTMLResponse,
 	summary='Загрузка главной страницы',
+	include_in_schema=False,
 )
 async def main_page(
 	request: Request,

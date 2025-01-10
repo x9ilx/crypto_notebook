@@ -25,8 +25,8 @@
                     <td class="px-6">
                        {% if plan.service_type.name == 'PURCHASE' %}${{ plan.investments }} {% else %}{{ plan.investments }} {{ plan.currency.name }}{% endif %} 
                     </td>
-                    <td class="px-6">
-                        ${{ plan.price }}
+                    <td class="px-6 normal-nums">
+                        ${{ '%0.10f' | format(plan.price | float) }}
                     </td>
                     <td class="px-6">
                         {% if plan.service_type.name == 'PURCHASE' %}

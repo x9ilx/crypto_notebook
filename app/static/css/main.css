@@ -1189,6 +1189,10 @@ select {
   text-transform: uppercase;
 }
 
+.normal-nums {
+  font-variant-numeric: normal;
+}
+
 .leading-tight {
   line-height: 1.25;
 }
