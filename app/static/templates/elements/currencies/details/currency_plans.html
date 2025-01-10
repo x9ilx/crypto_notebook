@@ -23,7 +23,7 @@
             {% for plan in plans_list  %}
                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-background-light-secondary dark:hover:bg-background-dark-secondary">
                     <td class="px-6">
-                       {% if plan.service_type.name == 'PURCHASE' %}${{ plan.investments }} {% else %}{{ plan.investments }} {{ investment_name }}{% endif %} 
+                       {% if plan.service_type.name == 'PURCHASE' %}${{ plan.investments }} {% else %}{{ plan.investments }} {{ plan.currency.name }}{% endif %} 
                     </td>
                     <td class="px-6">
                         ${{ plan.price }}
@@ -32,7 +32,7 @@
                         {% if plan.service_type.name == 'PURCHASE' %}
                             {{ '%0.2f' | format(plan.investments / plan.price | float) }} {{ plan.currency.name }}
                         {% else %}
-                            ${{ '%0.2f' | format(plan.investments * plan.price | float) }} 
+                            ${{ '%0.2f' | format(plan.investments * plan.price | float) }}
                         {% endif %}
                     </td>
                     <td class="px-6 text-center">
@@ -42,8 +42,13 @@
                         <a href="" class="cursor-pointer hover:underline">Удалить</a>
                     </td>
                 </tr>
-                <tr></tr>
             {% endfor %}
         </tbody>
+        <tfoot>
+            <tr>
+              <th id="total" colspan="2" class="text-right">Итого :</th>
+              <td>$15625.56</td>
+            </tr>
+        </tfoot>
     </table>
 </div>

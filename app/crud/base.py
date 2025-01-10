@@ -44,8 +44,8 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         order_desc: bool = False
     ) -> list[ModelType]:
         attr = getattr(self.model, attribute)
-        db_obj = await self._add_sorting_field(
-            await session.execute(
+        db_obj = await session.execute(
+            await self._add_sorting_field(
                 query=select(self.model).where(
                     attr == value, self.model.user_id == user.id
                 ),
