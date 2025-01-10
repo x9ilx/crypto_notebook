@@ -44,11 +44,11 @@
                 </tr>
                 {% if loop.last %}
                     {% if plan.service_type.name == 'PURCHASE' %}
-                        {% with profit=currency.get_purchases_profit, service_type=plan.service_type.name, currency_name=plan.currency.name %}
+                        {% with profit=currency.get_purchases_profit %}
                             {% include 'elements/currencies/details/currency_plans_profits_table_foot.html' %}
                         {% endwith %}
                     {% else %}
-                        {% with profit=currency.get_sales_profit, service_type=plan.service_type.name, currency_name=plan.currency.name %}
+                        {% with profit=currency.get_sales_profit %}
                             {% include 'elements/currencies/details/currency_plans_profits_table_foot.html' %}
                         {% endwith %}
                     {% endif %}
