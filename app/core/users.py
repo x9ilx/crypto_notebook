@@ -1,10 +1,9 @@
-
 from fastapi import Depends
 from fastapi_users import BaseUserManager, FastAPIUsers, IntegerIDMixin
 from fastapi_users.authentication import (
-    AuthenticationBackend,
-    BearerTransport,
-    JWTStrategy,
+	AuthenticationBackend,
+	BearerTransport,
+	JWTStrategy,
 )
 from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -20,36 +19,36 @@ bearer_transport = BearerTransport(tokenUrl='auth/jwt/login')
 
 
 def get_jwt_strategy() -> JWTStrategy:
-    return JWTStrategy(
-        secret=settings.security.secret,
-        lifetime_seconds=settings.security.jwt_lifetime,
-    )
+	return JWTStrategy(
+		secret=settings.security.secret,
+		lifetime_seconds=settings.security.jwt_lifetime,
+	)
 
 
 auth_backend = AuthenticationBackend(
-    name='jwt',
-    transport=bearer_transport,
-    get_strategy=get_jwt_strategy,
+	name='jwt',
+	transport=bearer_transport,
+	get_strategy=get_jwt_strategy,
 )
 
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):
-    yield SQLAlchemyUserDatabase(session, User)
+	yield SQLAlchemyUserDatabase(session, User)
 
 
 async def get_access_token_db(
-    session: AsyncSession = Depends(get_async_session),
+	session: AsyncSession = Depends(get_async_session),
 ):
-    yield AccessToken(session, AccessToken)
+	yield AccessToken(session, AccessToken)
 
 
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
-    reset_password_token_secret = settings.security.secret
-    verification_token_secret = settings.security.secret
+	reset_password_token_secret = settings.security.secret
+	verification_token_secret = settings.security.secret
 
 
 async def get_user_manager(user_db=Depends(get_user_db)):
-    yield UserManager(user_db)
+	yield UserManager(user_db)
 
 
 fastapi_user = FastAPIUsers[User, int](get_user_manager, [auth_backend])

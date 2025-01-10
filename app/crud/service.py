@@ -1,3 +1,5 @@
+import operator
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from crud.base import CRUDBase
@@ -14,7 +16,8 @@ from schemas.service import (
 
 
 class CRUDRiskMinimisation(
-    CRUDBase[RiskMinimisation, RiskMinimisationCreate, RiskMinimisationUpdate]
+        CRUDBase[RiskMinimisation, RiskMinimisationCreate,
+                 RiskMinimisationUpdate]
 ):
     def __init__(self) -> None:
         super().__init__(RiskMinimisation)
@@ -28,12 +31,12 @@ class CRUDRService(CRUDBase[Service, ServiceCreate, ServiceUpdate]):
         super().__init__(Service)
 
     async def create_service(
-        self,
-        currency: Currency,
-        new_service: ServiceCreate,
-        transaction_type: TransactionType,
-        user: User,
-        session: AsyncSession,
+            self,
+            currency: Currency,
+            new_service: ServiceCreate,
+            transaction_type: TransactionType,
+            user: User,
+            session: AsyncSession,
     ) -> Service:
         service_list = (
             currency.service_purchases_points

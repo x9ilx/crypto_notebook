@@ -1,0 +1,53 @@
+<div
+  class="relative p-5 overflow-x-auto shadow-md sm:rounded-lg text-text-light dark:text-text-dark"
+>
+<div id="accordion-nested-parent" data-accordion="collapse">
+  <div class="space-y-4 md:space-y-0 pb-4">
+    <label for="table-search" class="sr-only">Поиск</label>
+    <div class="relative">
+      <div
+        class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none"
+      >
+        <svg
+          class="w-4 h-4"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 20 20"
+        >
+          <path
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+          />
+        </svg>
+      </div>
+      <input
+        type="text"
+        id="table-search-users"
+        class="block p-2 ps-10 text-sm w-full bg-background-light border-background-light-secondary-200 focus:ring-background-light-secondary-950 focus:border-background-light-secondary-950 dark:bg-background-dark dark:border-background-dark-secondary-900 dark:focus:ring-background-dark-secondary-900 dark:focus:border-background-dark-secondary-900"
+        placeholder="Поиск по названию монеты"
+      />
+    </div>
+  </div>
+  <table class="w-full text-sm text-left rtl:text-righ">
+    <thead
+      class="text-xs uppercase border-b border-background-light-secondary-200 text-text-light-secondary bg-background-light-secondary dark:text-text-dark-secondary dark:bg-background-dark-secondary dark:border-background-dark-secondary-900"
+    >
+      <tr>
+        <th scope="col" class="py-3 text-center">Название валюты</th>
+        <th scope="col" class="py-3 text-center">Количество</th>
+        <th scope="col" class="py-3 text-center">Текущая стоимость</th>
+        <th scope="col" class="py-3 text-center">Эквивалент в $</th>
+        <th scope="col" class="py-3 text-center">Прирост</th>
+        <th scope="col" class="px-6 py-3 text-center">Подробности</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% include 'elements/currencies/currency_element.html' %}
+    </tbody>
+  </table>
+</div>
+</div>

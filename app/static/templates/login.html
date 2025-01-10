@@ -1,0 +1,80 @@
+{% extends 'base/auth_page.html' %}
+{% block title %}CryptoNotebook вход{% endblock title %}
+{% block page_name %}{% endblock page_name %}
+{% block page_text %}Вход в профиль{% endblock page_text %}
+{% block script %}
+<script>
+$(document).ready(function() {
+    $("#login_form").submit(function(event) {
+        event.preventDefault();
+        var username = $("#username").val()
+        var password = $("#password").val()
+        $.ajax({
+            url: '/auth/jwt/login',
+            method: 'post',
+            dataType: 'html',
+            data: {username: username, password: password},
+            statusCode: {
+                400: function() {
+                    $("#error_text").html('Неверный email или пароль')
+                },
+                200: function(token) {
+                    result = JSON.parse(token)
+                    $.cookie("jwt", result["access_token"], {
+                        expires: 1,
+                        path: '/',
+                        secure: true
+                    });
+                    window.location.replace("{{ url_for('main_page') }}")
+                }
+            }
+        });
+    });
+});
+</script>
+{% endblock script %}
+{% block error %}
+<p id="error_text" class="text-error"></p>
+{% endblock error %}
+{% block page_form %}
+<form id="login_form" class="space-y-4 md:space-y-6 text-text-light dark:text-text-dark" method="post">
+  <div>
+    <label for="email" class="block mb-2 text-sm font-medium">Ваш email</label>
+    <input
+      type="email"
+      name="username"
+      id="username"
+      class="bg-background-light border border-background-light-300 rounded-lg focus:ring-background-light-secondary-600 focus:border-background-light-secondary-600 block w-full p-2.5 dark:bg-background-dark dark:border-background-dark-700 dark:placeholder-gray-400"
+      placeholder="name@company.com"
+      required=""
+    />
+  </div>
+  <div>
+    <label
+      for="password"
+      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+      >Ваш пароль</label
+    >
+    <input
+      type="password"
+      name="password"
+      id="password"
+      placeholder="••••••••"
+      class="bg-background-light border border-background-light-300 rounded-lg focus:ring-background-light-secondary-600 focus:border-background-light-secondary-600 block w-full p-2.5 dark:bg-background-dark dark:border-background-dark-700 dark:placeholder-gray-400"
+      required=""
+    />
+  </div>
+  <div class="grid justify-items-end">
+    <a href="{{ url_for('main_page')}}" class="text-sm font-medium hover:underline">Забыли пароль?</a>
+  </div>
+  <button
+    type="submit"
+    class="w-full text-text-dark-100 bg-contrast-light hover:bg-contrast-light-secondary font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-contrast-dark dark:hover:bg-contrast-dark-secondary border border-background-light dark:border-background-dark"
+  >
+    Войти
+  </button>
+  <div class="grid justify-items-end">
+    {% include 'elements/theme_changer.html' %}
+  </div>
+</form>
+{% endblock page_form %}

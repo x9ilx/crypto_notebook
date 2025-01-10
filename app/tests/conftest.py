@@ -9,37 +9,37 @@ from main import app  # noqa
 from schemas.users import UserCreate  # noqa
 
 pytest_plugins = [
-    'tests.fixtures.user',
-    'tests.fixtures.currency',
-    'tests.fixtures.transaction',
-    'tests.fixtures.services',
+	'tests.fixtures.user',
+	'tests.fixtures.currency',
+	'tests.fixtures.transaction',
+	'tests.fixtures.services',
 ]
 
 
 DB_URL = 'sqlite+aiosqlite:///:memory:'
 ENGINE = create_async_engine(DB_URL, connect_args={'check_same_thread': False})
 TESTING_SESSION_LOCAL = sessionmaker(
-    autocommit=False, autoflush=False, bind=ENGINE, class_=AsyncSession
+	autocommit=False, autoflush=False, bind=ENGINE, class_=AsyncSession
 )
 
 
 async def database_action_with_engine(action):
-    async with ENGINE.begin() as connection:
-        await connection.run_sync(action)
+	async with ENGINE.begin() as connection:
+		await connection.run_sync(action)
 
 
 async def override_db():
-    async with TESTING_SESSION_LOCAL() as session:
-        yield session
+	async with TESTING_SESSION_LOCAL() as session:
+		yield session
 
 
 @pytest.fixture
 def anyio_backend():
-    return 'asyncio'
+	return 'asyncio'
 
 
 @pytest.fixture(autouse=True)
 async def init_db():
-    await database_action_with_engine(Base.metadata.create_all)
-    yield
-    await database_action_with_engine(Base.metadata.drop_all)
+	await database_action_with_engine(Base.metadata.create_all)
+	yield
+	await database_action_with_engine(Base.metadata.drop_all)
