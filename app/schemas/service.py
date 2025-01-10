@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class RiskMinimisationBase(BaseModel):
@@ -24,8 +24,8 @@ class RiskMinimisationResponse(RiskMinimisationBase):
 
 
 class ServiceBase(BaseModel):
-	investments: float
-	price: float
+	investments: float =  Field(..., gt=0.0)
+	price: float =  Field(..., gt=0.0)
 
 
 class ServiceCreate(ServiceBase):
@@ -33,8 +33,8 @@ class ServiceCreate(ServiceBase):
 
 
 class ServiceUpdate(BaseModel):
-	investments: Optional[float] = None
-	price: Optional[float] = None
+	investments: Optional[float] = Field(None, gt=0.0)
+	price: Optional[float] = Field(None, gt=0.0)
 
 
 class ServiceResponse(ServiceBase):

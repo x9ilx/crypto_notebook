@@ -1,4 +1,4 @@
-from sqlalchemy import Enum as saEnum
+from sqlalchemy import CheckConstraint, Enum as saEnum
 from sqlalchemy import Float, ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -27,6 +27,10 @@ class RiskMinimisation(Base, UserMixin):
 
 class Service(Base, UserMixin):
 	__user_back_populates__ = 'services'
+	__table_args__ = (
+		CheckConstraint('investments > 0', name='investment_great_than_zero'),
+		CheckConstraint('price > 0', name='price_great_than_zero')
+	)
 	investments: Mapped[float] = mapped_column(Float, nullable=False)
 	price: Mapped[float] = mapped_column(Float, nullable=False)
 	service_type: Mapped[TransactionType] = mapped_column(
