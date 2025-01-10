@@ -16,26 +16,6 @@ router = APIRouter(
 	prefix='/currency/{currency_id}/services', tags=['Services']
 )
 
-
-@router.get(
-	'/expected_profit_and_costs',
-	response_model=None,
-	summary='Позволяет получить ожидаемую прибыль и траты.',
-	description=(
-     'Сумма инвестиций/изъятия и сумма ожидаемой прибыли/количества монет.'
-    ),
-	dependencies=[Depends(current_user)]
-)
-async def get_expected_profit_and_costs(
-    service_type: TransactionType,
-    currency: Currency = Depends(check_currency_exist),
-)-> dict[str, float]:
-    return await service_crud.get_amount_investment_and_expected_currency(
-        currency=currency,
-        service_type=service_type,
-	)
-
-
 @router.post(
 	'/purchase_planning',
 	response_model=ServiceResponse,

@@ -7,7 +7,9 @@ from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.endpoints.currency import currency_get_all
+from api.endpoints.service import get_expected_profit_and_costs
 from core.db import get_async_session
+from models.transaction import TransactionType
 from models.user import User
 from services.frontend import get_user_on_jwt_from_cookies_or_redirect
 

@@ -1,3 +1,4 @@
+import operator
 from typing import Optional
 
 from sqlalchemy import Float, String, UniqueConstraint
@@ -69,6 +70,46 @@ class Currency(Base, UserMixin):
 		cascade='all, delete-orphan',
         order_by='desc(Service.price)',
 	)
+
+	def __get_service_amount_data(
+		self,
+		service_type: TransactionType
+	) -> dict[str, float]:
+		if service_type == TransactionType.PURCHASE:
+			operation = operator.truediv
+			service_list = self.service_purchases_points
+		else:
+			operation = operator.mul
+			service_list = self.service_sales_points
+
+		result = {
+			'total_investments': 0,
+			'total_profit': 0,
+		}
+		for service in service_list:
+			result['total_investments'] += service.investments
+			result['total_profit'] += operation(
+				service.investments,
+				service.price
+			)
+		return result
+
+	@property
+	def get_purchases_profit(
+    	self
+    ) -> dict[str, float]:
+		return self.__get_service_amount_data(
+			service_type=TransactionType.PURCHASE
+		)
+
+	@property
+	def get_sales_profit(
+    	self
+    ) -> dict[str, float]:
+		return self.__get_service_amount_data(
+			service_type=TransactionType.SALE
+		)
+
 
 	def __repr__(self):
 		return (

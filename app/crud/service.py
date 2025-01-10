@@ -53,29 +53,5 @@ class CRUDRService(CRUDBase[Service, ServiceCreate, ServiceUpdate]):
         service_list.append(service)
         return await self._commit_and_refresh(obj=service, session=session)
 
-    async def get_amount_investment_and_expected_currency(
-            self,
-            currency: Currency,
-            service_type: TransactionType,
-    ) -> dict[str, float]:
-        if service_type == TransactionType.PURCHASE:
-            operation = operator.truediv
-            service_list = currency.service_purchases_points
-        else:
-            operation = operator.mul
-            service_list = currency.service_sales_points
-
-        result = {
-			'total_investments': 0,
-			'total_profit': 0,
-		}
-        for service in service_list:
-            result['total_investments'] += service.investments
-            result['total_profit'] += operation(
-                service.investments,
-                service.price
-            )
-        return result
-
 
 service_crud = CRUDRService()
