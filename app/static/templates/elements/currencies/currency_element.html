@@ -9,7 +9,7 @@
   >
     <a href="#"
       ><img
-        class="w-10 h-10 rounded-full"
+        class="w-8 h-8 rounded-full"
         style="object-fit: scale-down"
         src="static/images/3378138.png"
         alt=""
@@ -19,11 +19,11 @@
         <a href="#" class="hover:underline">{{ currency.name }}</a>
       </div>
       <div class="font-normal text-gray-500" title="{{ currency.description }}">
-        {{ currency.description | truncate(100) }}
+        {% if currency.description %}{{ currency.description | truncate(100) }}{% else %}Нет описания{% endif %}
       </div>
     </div>
   </th>
-  <td class="px-6 py-4">{{ currency.quantity }} {{ currency.name }}</td>
+  <td class="px-6 py-4">{{ '%0.10f' | format(currency.quantity|float) }} {{ currency.name }}</td>
   <td class="px-6 py-4">
     ${{ '%0.10f' | format(currency.current_price | float) }}
   </td>

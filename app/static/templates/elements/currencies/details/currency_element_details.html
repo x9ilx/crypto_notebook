@@ -70,7 +70,7 @@
       {% with 
         elements_list=currency.service_sales_points,
         table_content="currency_plans_element.html" ,
-        headers=["Изъятие (" + currency.name + ")", "Предполагаемая стоимость монеты", "Доход"]
+        headers=["Изъятие (" + currency.name + ")", "Предполагаемая стоимость монеты", "Ожидаемый доход"]
       %}
         {% include 'elements/currencies/details/currency_details_table.html' %}
       {% endwith %}
@@ -84,7 +84,7 @@
     {% with 
       elements_list=currency.service_purchases_points,
       table_content="currency_plans_element.html",
-      headers=["Инвестиции ($)", "Предполагаемая стоимость монеты", "Количество монет"]
+      headers=["Инвестиции ($)", "Предполагаемая стоимость монеты", "Ожидаемое количество монет"]
     %}
         {% include 'elements/currencies/details/currency_details_table.html' %}
     {% endwith %}

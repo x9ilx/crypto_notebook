@@ -10,11 +10,22 @@
       </td>
     {% endif %}
     <td class="px-6">
-      ${{ '%0.2f'|format(element.amount * element.price|float) }}
+      ${{ '%0.10f'|format(element.amount * element.price|float) }}
     </td>
     <td class="px-6">
       {{ element.created_at.strftime('%d.%m.%Y') }}г.
     </td>
   </tr>
+  {% if loop.last %}
+  {% if element.transaction_type.name == 'PURCHASE' %}
+    {% with statistic=currency.get_purchase_statistics %}
+      {% include 'elements/currencies/details/currency_transaction_statistic_table_footer.html' %}
+    {% endwith %}
+  {% else %}
+    {% with statistic=currency.get_sale_statistics %}
+      {% include 'elements/currencies/details/currency_transaction_statistic_table_footer.html' %}
+    {% endwith %}
+  {% endif %}
+{% endif %}
 {% endfor %}
 

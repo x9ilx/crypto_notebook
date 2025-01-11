@@ -73,7 +73,7 @@ class Currency(Base, UserMixin):
         order_by='desc(Service.price)',
 	)
 
-	def __get_service_statictic_data(
+	def __get_services_statictic_data(
 		self,
 		service_type: TransactionType
 	) -> dict[str, float]:
@@ -98,22 +98,64 @@ class Currency(Base, UserMixin):
 			result['avg_price'] += service.price / element_count
 		return result
 
+	def __get_transactions_statictic_data(
+		self,
+		transaction_type: TransactionType
+	) -> dict[str, float]:
+		transaction_list = (
+			self.purchases
+			if transaction_type == TransactionType.PURCHASE
+			else self.sales
+		)
+		transaction_count = len(transaction_list)
+		result = {
+			'total_amount': 0,
+			'total_cost': 0,
+			'avg_risk_minimisation_point': 0,
+			'avg_price': 0,
+		}
+		for transaction in transaction_list:
+			result['total_amount'] += transaction.amount
+			result['total_cost'] += transaction.amount * transaction.price
+			if transaction.risk_minimisation_point:
+				result['avg_risk_minimisation_point'] += (
+					transaction.risk_minimisation_point.price
+     				/ transaction_count
+				)
+			result['avg_price'] += transaction.price / transaction_count
+		return result
+
 	@property
-	def get_purchases_profit(
+	def get_purchase_plan_statistics(
     	self
     ) -> dict[str, float]:
-		return self.__get_service_statictic_data(
+		return self.__get_services_statictic_data(
 			service_type=TransactionType.PURCHASE
 		)
 
 	@property
-	def get_sales_profit(
+	def get_sale_plan_statistics(
     	self
     ) -> dict[str, float]:
-		return self.__get_service_statictic_data(
+		return self.__get_services_statictic_data(
 			service_type=TransactionType.SALE
 		)
 
+	@property
+	def get_purchase_statistics(
+    	self
+    ) -> dict[str, float]:
+		return self.__get_transactions_statictic_data(
+			transaction_type=TransactionType.PURCHASE
+		)
+
+	@property
+	def get_sale_statistics(
+    	self
+    ) -> dict[str, float]:
+		return self.__get_transactions_statictic_data(
+			transaction_type=TransactionType.SALE
+		)
 
 	def __repr__(self):
 		return (

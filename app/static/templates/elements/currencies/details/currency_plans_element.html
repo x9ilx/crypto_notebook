@@ -2,28 +2,28 @@
   <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-background-light-secondary dark:hover:bg-background-dark-secondary">
     <td class="px-6">
       {% if element.service_type.name == 'PURCHASE' %}
-        ${{ element.investments }}
+        ${{ '%0.10f'|format(element.investments|float) }}
       {% else %}
-        {{ element.investments }} {{ element.currency.name }}
+        {{ '%0.10f'|format(element.investments|float) }} {{ element.currency.name }}
       {% endif %}
     </td>
     <td class="px-6 normal-nums">${{ '%0.10f'|format(element.price|float) }}</td>
     <td class="px-6">
       {% if element.service_type.name == 'PURCHASE' %}
-        {{ '%0.2f'|format(element.investments / element.price|float) }} {{ currency.name }}
+        {{ '%0.10f'|format(element.investments / element.price|float) }} {{ currency.name }}
       {% else %}
-        ${{ '%0.2f'|format(element.investments * element.price|float) }}
+        ${{ '%0.10f'|format(element.investments * element.price|float) }}
       {% endif %}
     </td>
   </tr>
   {% if loop.last %}
     {% if element.service_type.name == 'PURCHASE' %}
-      {% with profit=currency.get_purchases_profit %}
-        {% include 'elements/currencies/details/currency_plans_profits_table_foot.html' %}
+      {% with statistic=currency.get_purchase_plan_statistics %}
+        {% include 'elements/currencies/details/currency_plans_statistic_table_footer.html' %}
       {% endwith %}
     {% else %}
-      {% with profit=currency.get_sales_profit %}
-        {% include 'elements/currencies/details/currency_plans_profits_table_foot.html' %}
+      {% with statistic=currency.get_sale_plan_statistics %}
+        {% include 'elements/currencies/details/currency_plans_statistic_table_footer.html' %}
       {% endwith %}
     {% endif %}
   {% endif %}
