@@ -9,13 +9,7 @@
                     Предполагаемая стоимость монеты
                 </th>
                 <th scope="col" class="px-6 py-3">
-                     {% if investment_name == '$' %}Количество монет{% else %}Прибыль{% endif %} 
-                </th>
-                <th scope="col" class="px-6 py-3 text-center">
-                    Редактировать план
-                </th>
-                <th scope="col" class="px-6 py-3 text-center">
-                    Удалить план
+                     {% if investment_name == '$' %}Количество монет{% else %}Доход{% endif %} 
                 </th>
             </tr>
         </thead>
@@ -34,12 +28,6 @@
                         {% else %}
                             ${{ '%0.2f' | format(plan.investments * plan.price | float) }}
                         {% endif %}
-                    </td>
-                    <td class="px-6 text-center">
-                        <a href="" class="cursor-pointer hover:underline">Изменить</a>
-                    </td>
-                    <td class="px-6 text-center text-error">
-                        <a href="" class="cursor-pointer hover:underline">Удалить</a>
                     </td>
                 </tr>
                 {% if loop.last %}

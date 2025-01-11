@@ -71,7 +71,7 @@ class Currency(Base, UserMixin):
         order_by='desc(Service.price)',
 	)
 
-	def __get_service_amount_data(
+	def __get_service_statictic_data(
 		self,
 		service_type: TransactionType
 	) -> dict[str, float]:
@@ -81,10 +81,11 @@ class Currency(Base, UserMixin):
 		else:
 			operation = operator.mul
 			service_list = self.service_sales_points
-
+		element_count = len(service_list)
 		result = {
 			'total_investments': 0,
 			'total_profit': 0,
+			'avg_price': 0,
 		}
 		for service in service_list:
 			result['total_investments'] += service.investments
@@ -92,13 +93,14 @@ class Currency(Base, UserMixin):
 				service.investments,
 				service.price
 			)
+			result['avg_price'] += service.price / element_count
 		return result
 
 	@property
 	def get_purchases_profit(
     	self
     ) -> dict[str, float]:
-		return self.__get_service_amount_data(
+		return self.__get_service_statictic_data(
 			service_type=TransactionType.PURCHASE
 		)
 
@@ -106,7 +108,7 @@ class Currency(Base, UserMixin):
 	def get_sales_profit(
     	self
     ) -> dict[str, float]:
-		return self.__get_service_amount_data(
+		return self.__get_service_statictic_data(
 			service_type=TransactionType.SALE
 		)
 
