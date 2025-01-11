@@ -34,6 +34,7 @@ class Currency(Base, UserMixin):
 		overlaps='purchases',
 		lazy='joined',
 		cascade='all, delete-orphan',
+  		order_by='desc(Transaction.created_at)',
 	)
 	purchases: Mapped[list['Transaction']] = relationship(
 		'Transaction',
@@ -44,6 +45,7 @@ class Currency(Base, UserMixin):
 		overlaps='sales',
 		lazy='joined',
 		cascade='all, delete-orphan',
+  		order_by='desc(Transaction.created_at)',
 	)
 	risk_minimisation_points: Mapped[list['RiskMinimisation']] = relationship(
 		'RiskMinimisation', lazy='joined', cascade='all, delete-orphan'

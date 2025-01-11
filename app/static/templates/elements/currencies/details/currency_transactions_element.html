@@ -1,0 +1,20 @@
+{% for element in elements_list %}
+  <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-background-light-secondary dark:hover:bg-background-dark-secondary">
+    <td class="px-6">
+      {{ element.amount }} {{currency.name}}
+    </td>
+    <td class="px-6 normal-nums">${{ '%0.10f'|format(element.price|float) }}</td>
+    {% if element.transaction_type.name == "PURCHASE" %}
+      <td class="px-6">
+        ${{ '%0.10f'|format(element.risk_minimisation_point.price|float) }}
+      </td>
+    {% endif %}
+    <td class="px-6">
+      ${{ '%0.2f'|format(element.amount * element.price|float) }}
+    </td>
+    <td class="px-6">
+      {{ element.created_at.strftime('%d.%m.%Y') }}г.
+    </td>
+  </tr>
+{% endfor %}
+
