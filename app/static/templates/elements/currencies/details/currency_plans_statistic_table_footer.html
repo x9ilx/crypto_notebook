@@ -1,4 +1,4 @@
-<tr class="border-4 border-black">
+<tr>
   <td id="total_investments" class="font-bold px-6"  {% if statistic.total_investments > currency.quantity %}title="Запланировано продать больше, чем есть в наличии."{% endif %}>
     Итого:{% if element.service_type.name == 'PURCHASE' %}
       <span>${{ statistic.total_investments|format_float }}</span>

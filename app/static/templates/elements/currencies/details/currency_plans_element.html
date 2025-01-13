@@ -1,5 +1,5 @@
 {% for element in elements_list %}
-  <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-background-light-secondary dark:hover:bg-background-dark-secondary">
+  <tr class="bg-background-light border-b dark:bg-background-dark dark:border-gray-700 hover:bg-background-light-secondary dark:hover:bg-background-dark-secondary">
     <td class="px-6">
       {% if element.service_type.name == 'PURCHASE' %}
         ${{ element.investments|format_float }}
