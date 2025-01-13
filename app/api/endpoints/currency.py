@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, File, Form, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.currency_validators import (
@@ -12,6 +12,8 @@ from core.users import current_user
 from crud.currency import currency_crud
 from models.currency import Currency
 from models.user import User
+from services.currencies import delete_image_file_if_exist
+from services.files import delete_file, save_file
 from schemas.currency import CurrencyCreate, CurrencyResponse, CurrencyUpdate
 
 
@@ -57,16 +59,34 @@ async def currency_get(
 	status_code=HTTPStatus.CREATED,
 )
 async def currency_create(
-	currency: CurrencyCreate,
+	name: str = Form(..., min_length=1),
+	description: str | None = Form(None),
+	quantity: float = Form(..., ge=0.0),
+	current_price: float = Form(..., gt=0.0),
+	image: UploadFile | None = File(None),
 	user: User = Depends(current_user),
 	session: AsyncSession = Depends(get_async_session),
 ) -> CurrencyResponse:
 	await check_currency_name_is_unique(
-		name=currency.name,
+		name=name,
 		user=user,
 		session=session,
 	)
-	return await currency_crud.create(currency, user, session)
+	if image is not None:
+		image_path = await save_file(image)
+	else:
+		image_path = None
+	return await currency_crud.create(
+		obj_in=CurrencyCreate(
+			name=name,
+			description=description,
+			quantity=quantity,
+			current_price=current_price,
+			image_path=image_path,
+		),
+		user=user,
+		session=session,
+	)
 
 
 @router.patch(
@@ -76,13 +96,25 @@ async def currency_create(
 	description='Для установки пустого значения необходимо отправить null',
 )
 async def currency_update(
-	new_currency: CurrencyUpdate,
+	name: str | None = Form(None, min_length=1),
+	description: str | None = Form(None),
+	image: UploadFile | None = File(None),
+	remove_image: bool | None = Form(None),
 	existing_currency: Currency = Depends(check_currency_exist),
 	session: AsyncSession = Depends(get_async_session),
 ):
+	if image is not None:
+		await delete_image_file_if_exist(existing_currency)
+		image_path = await save_file(image)
+	else:
+		image_path = existing_currency.image_path
+		if remove_image:
+			image_path = 'null'
 	return await currency_crud.update(
 		db_obj=existing_currency,
-		obj_in=new_currency,
+		obj_in=CurrencyUpdate(
+			name=name, description=description, image_path=image_path
+		),
 		session=session,
 	)
 
@@ -96,4 +128,5 @@ async def currency_delete(
 	currency: Currency = Depends(check_currency_exist),
 	session: AsyncSession = Depends(get_async_session),
 ) -> CurrencyResponse:
+	await delete_file(currency.image_path)
 	return await currency_crud.delete(currency, session)
