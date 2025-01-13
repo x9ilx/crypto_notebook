@@ -1,13 +1,24 @@
 {% extends 'base/head_and_body.html' %}
-{% block title %}CryptoNotebook{% endblock title %}
-{% block script %}<script></script>{% endblock script %}
-{% block style %}<style></style>{% endblock style %}
-{% block body_content %} 
-{% include 'elements/navbar.html' %}
-<main
-    class="w-full bg-background-content-light dark:bg-background-content-dark min-h-screen transition-all main">
+{% block title %}
+  CryptoNotebook
+{% endblock %}
+{% block script %}
+  <script></script>
+{% endblock %}
+{% block style %}
+  <style></style>
+{% endblock %}
+{% block body_content %}
+  {% include 'elements/navbar.html' %}
+  <main class="w-full bg-background-content-light dark:bg-background-content-dark min-h-screen transition-all main">
     <div class="overflow-auto">
-        {% block main_content %}{% endblock main_content %}
+      {% block main_content %}
+      {% endblock %}
     </div>
-</main>
-{% endblock body_content%}
+    <div class="hidden bg-slate-900 transition duration-150 ease-in-out z-10 absolute top-0 right-0 bottom-0 left-0" id="modal">
+        <div role="alert" class="container mx-auto w-11/12 md:w-2/3 max-w-lg flex flex-row min-h-screen justify-center items-center" id="modal_content">
+            {% block modal_content %}No content{% endblock modal_content %}
+        </div>
+    </div>
+  </main>
+{% endblock %}

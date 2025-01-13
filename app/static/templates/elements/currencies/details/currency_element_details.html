@@ -67,8 +67,12 @@
       role="tabpanel"
       aria-labelledby="sale-plan-{{ loop.index }}-tab"
     >
-      {% with investment_name=currency.name, plans_list=currency.service_sales_points %}
-        {% include 'elements/currencies/details/currency_plans.html' %}
+      {% with 
+        elements_list=currency.service_sales_points,
+        table_content="currency_plans_element.html" ,
+        headers=["Изъятие (" + currency.name + ")", "Предполагаемая стоимость монеты", "Ожидаемый доход"]
+      %}
+        {% include 'elements/currencies/details/currency_details_table.html' %}
       {% endwith %}
     </div>
     <div
@@ -77,8 +81,12 @@
       role="tabpanel"
       aria-labelledby="purchase-plan-{{ loop.index }}-tab"
     >
-    {% with investment_name='$', plans_list=currency.service_purchases_points %}
-        {% include 'elements/currencies/details/currency_plans.html' %}
+    {% with 
+      elements_list=currency.service_purchases_points,
+      table_content="currency_plans_element.html",
+      headers=["Инвестиции ($)", "Предполагаемая стоимость монеты", "Ожидаемое количество монет"]
+    %}
+        {% include 'elements/currencies/details/currency_details_table.html' %}
     {% endwith %}
     </div>
     <div
@@ -87,7 +95,13 @@
       role="tabpanel"
       aria-labelledby="sales-{{ loop.index }}-tab"
     >
-      test 3
+    {% with
+      elements_list=currency.sales,
+      table_content="currency_transactions_element.html",
+      headers=["Количество монет", "Цена", "Стоимость", "Дата"]
+    %}
+        {% include 'elements/currencies/details/currency_details_table.html' %}
+    {% endwith %}
     </div>
     <div
       class="p-4 bg-background-light dark:bg-background-dark hidden"
@@ -95,7 +109,13 @@
       role="tabpanel"
       aria-labelledby="purchases-{{ loop.index }}-tab"
     >
-      test 4
+    {% with
+      elements_list=currency.purchases,
+      table_content="currency_transactions_element.html",
+      headers=["Количество монет", "Цена", "Точка минимизации рисков", "Стоимость", "Дата"]
+    %}
+        {% include 'elements/currencies/details/currency_details_table.html' %}
+    {% endwith %}
     </div>
   </div>
 </div>

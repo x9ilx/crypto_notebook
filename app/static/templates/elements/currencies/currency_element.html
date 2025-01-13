@@ -1,58 +1,32 @@
 {% for currency in currencies %}
-<tr
-  class="border-b border-background-light-secondary-200 bg-background-light text-text-light hover:bg-background-light-secondary dark:bg-background-dark dark:text-text-dark dark:hover:bg-background-dark-secondary dark:border-background-dark-secondary-900"
->
-  <th
-    scope="row"
-    class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
-    style="white-space: wrap"
-  >
-    <a href="#"
-      ><img
-        class="w-10 h-10 rounded-full"
-        style="object-fit: scale-down"
-        src="static/images/3378138.png"
-        alt=""
-    /></a>
-    <div class="ps-3">
-      <div class="text-base font-semibold">
-        <a href="#" class="hover:underline">{{ currency.name }}</a>
+  <tr class="border-b border-background-light-secondary-200 bg-background-light text-text-light hover:bg-background-light-secondary dark:bg-background-dark dark:text-text-dark dark:hover:bg-background-dark-secondary dark:border-background-dark-secondary-900">
+    <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white" style="white-space: wrap">
+      <a href="#"><img class="max-w-[32px] h-auto rounded-full object-cover"  src="static/images/3378138.png" alt="" /></a>
+      <div class="ps-3">
+        <div class="text-base font-semibold">
+          <a href="#" class="hover:underline">{{ currency.name }}</a>
+        </div>
+        <div class="font-normal text-gray-500" title="{{ currency.description }}">
+          {% if currency.description %}
+            {{ currency.description|truncate(100) }}
+          {% else %}
+            Нет описания
+          {% endif %}
+        </div>
       </div>
-      <div class="font-normal text-gray-500" title="{{ currency.description }}">
-        {{ currency.description | truncate(100) }}
-      </div>
-    </div>
-  </th>
-  <td class="px-6 py-4">{{ currency.quantity }} {{ currency.name }}</td>
-  <td class="px-6 py-4">
-    ${{ '%0.10f' | format(currency.current_price | float) }}
-  </td>
-  <td class="px-6 py-4">
-    ${{ '%0.2f' | format(currency.quantity * currency.current_price | float) }}
-  </td>
-  <td class="px-6 py-4">{{ '%0.2f' | format(currency.profit) }}%</td>
-  <td class="px-6 py-4">
-    <button
-      type="button"
-      class="flex items-center justify-between"
-      onClick="show_currency_details('collapse-{{ loop.index }}')"
-    >
-      <span
-        id="collapse-{{ loop.index }}-label"
-        class="cursor-pointer"
-        >Подробнее ↓</span
-      >
-    </button>
-  </td>
-</tr>
+    </th>
+    <td class="px-6 py-4">{{ currency.quantity|format_float }} {{ currency.name }}</td>
+    <td class="px-6 py-4">${{ currency.current_price|format_float }}</td>
+    <td class="px-6 py-4">${{ (currency.quantity * currency.current_price)|format_float }}</td>
+    <td class="px-6 py-4">{{ '%0.2f'|format(currency.profit) }}%</td>
+    <td class="px-6 py-4">
+      <button type="button" class="flex items-center justify-between" onClick="show_currency_details('collapse-{{ loop.index }}')"><span id="collapse-{{ loop.index }}-label" class="cursor-pointer">Подробнее ↓</span></button>
+    </td>
+  </tr>
 
-<tr
-  id="collapse-{{ loop.index }}"
-  class="bg-background-light text-text-light dark:bg-background-dark dark:text-text-dark"
-  style="display: none"
->
-  <td class="px-4 py-2" colspan="6">
-    {% include 'elements/currencies/details/currency_element_details.html' %}
-  </td>
-</tr>
+  <tr id="collapse-{{ loop.index }}" class="bg-background-light text-text-light dark:bg-background-dark dark:text-text-dark" style="display: none">
+    <td class="px-4 py-2" colspan="6">
+      {% include 'elements/currencies/details/currency_element_details.html' %}
+    </td>
+  </tr>
 {% endfor %}

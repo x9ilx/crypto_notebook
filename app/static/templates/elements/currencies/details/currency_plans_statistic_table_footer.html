@@ -1,0 +1,20 @@
+<tr>
+  <td id="total_investments" class="font-bold px-6"  {% if statistic.total_investments > currency.quantity %}title="Запланировано продать больше, чем есть в наличии."{% endif %}>
+    Итого:{% if element.service_type.name == 'PURCHASE' %}
+      <span>${{ statistic.total_investments|format_float }}</span>
+    {% else %}
+      <span class="{% if statistic.total_investments > currency.quantity %}text-error{% endif %}">{{ statistic.total_investments|format_float }} {{ currency.name }}</span>
+      {% if statistic.total_investments > currency.quantity %}
+        <span class="text-error">ⓘ</span>
+      {% endif %}
+    {% endif %}
+  </td>
+  <td id="avg_price" class="font-bold px-6">Среднее: ${{ statistic.avg_price|format_float }}</td>
+  <td id="total_profit" class="font-bold px-6">
+    Итого:{% if element.service_type.name == 'PURCHASE' %}
+      {{ statistic.total_profit|format_float }} {{ currency.name }}
+    {% else %}
+      ${{ statistic.total_profit|format_float }}
+    {% endif %}
+  </td>
+</tr>

@@ -1,0 +1,31 @@
+{% for element in elements_list %}
+  <tr class="bg-background-light border-b dark:bg-background-dark dark:border-gray-700 hover:bg-background-light-secondary dark:hover:bg-background-dark-secondary">
+    <td class="px-6">
+      {{ element.amount|format_float }} {{currency.name}}
+    </td>
+    <td class="px-6 normal-nums">${{ element.price|format_float }}</td>
+    {% if element.transaction_type.name == "PURCHASE" %}
+      <td class="px-6">
+        ${{ element.risk_minimisation_point.price|format_float }}
+      </td>
+    {% endif %}
+    <td class="px-6">
+      ${{ (element.amount * element.price)|format_float }}
+    </td>
+    <td class="px-6">
+      {{ element.created_at.strftime('%d.%m.%Y') }}г.
+    </td>
+  </tr>
+  {% if loop.last %}
+  {% if element.transaction_type.name == 'PURCHASE' %}
+    {% with statistic=currency.get_purchase_statistics %}
+      {% include 'elements/currencies/details/currency_transaction_statistic_table_footer.html' %}
+    {% endwith %}
+  {% else %}
+    {% with statistic=currency.get_sale_statistics %}
+      {% include 'elements/currencies/details/currency_transaction_statistic_table_footer.html' %}
+    {% endwith %}
+  {% endif %}
+{% endif %}
+{% endfor %}
+
