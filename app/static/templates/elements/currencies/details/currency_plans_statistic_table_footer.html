@@ -1,20 +1,20 @@
 <tr class="border-4 border-black">
-  <td id="total_investments" class="font-bold px-6" {% if statistic.total_investments > currency.quantity %}title="Запланировано продать больше, чем есть в наличии."{% endif %}>
+  <td id="total_investments" class="font-bold px-6"  {% if statistic.total_investments > currency.quantity %}title="Запланировано продать больше, чем есть в наличии."{% endif %}>
     Итого:{% if element.service_type.name == 'PURCHASE' %}
-      <span>${{ '%0.10f'|format(statistic.total_investments|float) }}</span>
+      <span>${{ statistic.total_investments|format_float }}</span>
     {% else %}
-      <span class="{% if statistic.total_investments > currency.quantity %}text-error{% endif %}">{{ '%0.10f'|format(statistic.total_investments|float) }} {{ currency.name }}</span>
+      <span class="{% if statistic.total_investments > currency.quantity %}text-error{% endif %}">{{ statistic.total_investments|format_float }} {{ currency.name }}</span>
       {% if statistic.total_investments > currency.quantity %}
         <span class="text-error">ⓘ</span>
       {% endif %}
     {% endif %}
   </td>
-  <td id="avg_price" class="font-bold px-6">Среднее: ${{ '%0.10f'|format(statistic.avg_price|float) }}</td>
+  <td id="avg_price" class="font-bold px-6">Среднее: ${{ statistic.avg_price|format_float }}</td>
   <td id="total_profit" class="font-bold px-6">
     Итого:{% if element.service_type.name == 'PURCHASE' %}
-      {{ '%0.10f'|format(statistic.total_profit|float) }} {{ currency.name }}
+      {{ statistic.total_profit|format_float }} {{ currency.name }}
     {% else %}
-      ${{ '%0.10f'|format(statistic.total_profit|float) }}
+      ${{ statistic.total_profit|format_float }}
     {% endif %}
   </td>
 </tr>

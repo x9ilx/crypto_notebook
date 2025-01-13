@@ -2,17 +2,17 @@
   <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-background-light-secondary dark:hover:bg-background-dark-secondary">
     <td class="px-6">
       {% if element.service_type.name == 'PURCHASE' %}
-        ${{ '%0.10f'|format(element.investments|float) }}
+        ${{ element.investments|format_float }}
       {% else %}
-        {{ '%0.10f'|format(element.investments|float) }} {{ element.currency.name }}
+        {{ element.investments|format_float }} {{ element.currency.name }}
       {% endif %}
     </td>
-    <td class="px-6 normal-nums">${{ '%0.10f'|format(element.price|float) }}</td>
+    <td class="px-6 normal-nums">${{ element.price|format_float }}</td>
     <td class="px-6">
       {% if element.service_type.name == 'PURCHASE' %}
-        {{ '%0.10f'|format(element.investments / element.price|float) }} {{ currency.name }}
+        {{ (element.investments / element.price)|format_float }} {{ currency.name }}
       {% else %}
-        ${{ '%0.10f'|format(element.investments * element.price|float) }}
+        ${{ (element.investments * element.price)|format_float }}
       {% endif %}
     </td>
   </tr>

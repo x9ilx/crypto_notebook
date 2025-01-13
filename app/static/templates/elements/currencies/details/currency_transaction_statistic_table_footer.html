@@ -1,11 +1,11 @@
 <tr class="border-4 border-black">
     <td class="font-bold px-6">
-        <span>Итого: {{ '%0.10f'|format(statistic.total_amount|float) }} {{ currency.name }}</span>
+        <span>Итого: {{ statistic.total_amount|format_float }} {{ currency.name }}</span>
     </td>
-    <td class="font-bold px-6">Среднее: ${{ '%0.10f'|format(statistic.avg_price|float) }}</td>
+    <td class="font-bold px-6">Среднее: ${{ statistic.avg_price|format_float }}</td>
     {% if element.transaction_type.name == "PURCHASE" %}
-        <td class="font-bold px-6">Среднее: ${{ '%0.10f'|format(statistic.avg_risk_minimisation_point|float) }}</td>
+        <td class="font-bold px-6">Среднее: ${{ statistic.avg_risk_minimisation_point|format_float }}</td>
     {% endif %}
-    <td class="font-bold px-6">Итого: ${{ '%0.10f'|format(statistic.total_cost|float) }}</td>
+    <td class="font-bold px-6">Итого: ${{ statistic.total_cost|format_float }}</td>
     <td></td>
   </tr>  
