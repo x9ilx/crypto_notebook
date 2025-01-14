@@ -22,12 +22,10 @@ class CurrencyBase(BaseModel, NameValidator):
 	name: str = Field(..., min_length=1)
 	description: Optional[str] = None
 	quantity: float = Field(default=0.0, ge=0.0)
-	current_price: float = Field(default=0.0, ge=0.0)
-	image_path: Optional[str] = None
-
+	current_price: float = Field(gt=0.0)
 
 class CurrencyCreate(CurrencyBase, NameValidator):
-	pass
+	image_path: Optional[str] = None
 
 
 class CurrencyUpdate(BaseModel, NameValidator):
@@ -39,6 +37,7 @@ class CurrencyUpdate(BaseModel, NameValidator):
 class CurrencyResponse(CurrencyBase):
 	model_config = ConfigDict(from_attributes=True)
 	id: int
+	image_path: Optional[str] = None
 	profit: float = Field(default=0.0)
 	sales: list[TransactionResponse] = []
 	purchases: list[TransactionResponse] = []

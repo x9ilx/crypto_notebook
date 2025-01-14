@@ -11,7 +11,8 @@ class AppConfig(BaseModel):
 		'статистику: инвестиции, прибыль, активы и т. п.'
 	)
 	load_demo_data_fixtures: bool = False
-
+	images_save_base_path: str = 'static/images/'
+	allowed_mime_type_for_currency_image: str = ['image/jpeg', 'image/png']
 
 class DBConfig(BaseModel):
 	database_url: str = None
@@ -41,6 +42,7 @@ class EmailConfig(BaseModel):
 
 class Settings(BaseSettings):
 	model_config = SettingsConfigDict(
+		env_ignore_empty=True,
 		env_file='.env',
 		env_file_encoding='utf-8',
 		case_sensitive=False,
