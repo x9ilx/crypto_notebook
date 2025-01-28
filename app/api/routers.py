@@ -7,7 +7,7 @@ from .endpoints import (
 	user_router,
 )
 
-main_router = APIRouter()
+main_router = APIRouter(prefix='/api')
 main_router.include_router(user_router)
 main_router.include_router(currency_router)
 main_router.include_router(service_router)

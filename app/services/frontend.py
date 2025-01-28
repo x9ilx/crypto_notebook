@@ -3,7 +3,7 @@ from http import HTTPStatus
 from fastapi import Depends, Request
 
 from core.users import get_jwt_strategy, get_user_manager
-from frontend.exeptions import FrontendUnauthorizedExeption
+from frontend.exceptions import FrontendUnauthorizedExeption
 from models.user import User
 
 

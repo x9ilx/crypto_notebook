@@ -12,10 +12,13 @@ from core.users import current_user
 from crud.currency import currency_crud
 from models.currency import Currency
 from models.user import User
+from schemas.currency import (
+	CurrencyCreate,
+	CurrencyResponse,
+	CurrencyUpdate
+)
 from services.currencies import delete_image_file_if_exist
 from services.files import delete_file, save_file
-from schemas.currency import CurrencyCreate, CurrencyResponse, CurrencyUpdate
-
 
 router = APIRouter(prefix='/currency', tags=['Currency'])
 

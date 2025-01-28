@@ -1,6 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./static/templates/**/*.{html,js}"],
+  content: [
+      "./static/templates/**/*.{html,js}",
+      "./static/css/cryptonotebook.css"
+  ],
   theme: {
     extend: {
       colors: {
@@ -168,7 +171,7 @@ module.exports = {
             950: '#2b6ad6',
           },
           dark: {
-            DEFAULT: '#193e7d',
+            DEFAULT: '#1e4394',
             secondary: '#153469',
             50: '#ffffff',
             100: '#f0e5e9',

@@ -4,7 +4,8 @@
       <a href="#"><img class="max-w-[32px] h-auto rounded-full object-cover"  src="{{ currency.image_path }}" alt="" /></a>
       <div class="ps-3">
         <div class="text-base font-semibold">
-          <a href="#" class="hover:underline">{{ currency.name }}</a>
+          <a href="/currency/{{ currency.id }}" class="hover:underline">{{
+                  currency.name }}</a>
         </div>
         <div class="font-normal text-gray-500" title="{{ currency.description }}">
           {% if currency.description %}

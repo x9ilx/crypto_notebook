@@ -16,7 +16,7 @@
       {{ element.created_at.strftime('%d.%m.%Y') }}г.
     </td>
   </tr>
-  {% if loop.last %}
+  {% if loop.last and not exclude_footer %}
   {% if element.transaction_type.name == 'PURCHASE' %}
     {% with statistic=currency.get_purchase_statistics %}
       {% include 'elements/currencies/details/currency_transaction_statistic_table_footer.html' %}

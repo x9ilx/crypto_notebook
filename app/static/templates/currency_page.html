@@ -1,0 +1,49 @@
+{% extends 'base/main_page.html' %}
+
+{% block main_content %}
+    {% if error %}
+        <div class="flex flex-row min-h-screen justify-center items-center">
+            <p class="p-2 text-error">{{ error }}</p>
+        </div>
+    {% else %}
+        <div class="grid grid-cols-12 gap-4 p-8 mt-2">
+            <div class="col-span-9">
+                <div>
+                    <div class="flex">
+                        <img class="max-w-[42px] h-auto rounded-full object-cover me-2" src="/{{ currency.image_path }}" alt=""/>
+                        <span class="font-semibold text-4xl">{{ currency.quantity|format_float }} {{ currency.name }}</span>
+                        <span class="font-semibold text-base text-gray-500 ms-4">Цена: ${{ currency.current_price|format_float }}</span>
+                        <span class="font-semibold text-base text-gray-500 ms-4">Итого: ${{ (currency.current_price * currency.quantity)|format_float }}</span>
+                    </div>
+                    <hr class="my-4">
+                    <div class="font-normal text-gray-500">
+                        <pre style="white-space: pre-wrap; word-wrap:
+                        break-word;">{{ currency.description }}</pre>
+                    </div>
+                </div>
+                <hr class="mt-4">
+                {% with loop={'index': 1} %}
+                    {% include 'elements/currencies/details/currency_element_details.html' %}
+                {% endwith %}
+            </div>
+            <div class="col-span-3 border-l p-4">
+                    <div class="flex">
+                        <div>
+                            Прирост:
+                        </div>
+                        <div>
+                            55.56%
+                        </div>
+                    </div>
+                    <div class="flex">
+                        <div>
+                            История цены:
+                        </div>
+                        <div>
+                            Тут красивый график
+                        </div>
+                    </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock main_content %}

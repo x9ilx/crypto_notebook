@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  .nav > ul > li.active {
+    @apply text-contrast-light dark:text-contrast-dark border-opacity-100;
+  }
+}
